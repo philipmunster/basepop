@@ -17,8 +17,8 @@ import {
 } from "@/components/ui/sidebar"
 import Image from 'next/image'
 
-export default function NavGroup({ groupLabel, items }: {
-  groupLabel: string
+export default function NavMain({ groupLabel, items, atBottom = false }: {
+  groupLabel?: string
   items: {
     title: string
     url: string
@@ -34,12 +34,13 @@ export default function NavGroup({ groupLabel, items }: {
       title: string
       url: string
     }[]
-  }[]
+  }[],
+  atBottom?: boolean 
 }) {
   return (
 
-    <SidebarGroup>
-      <SidebarGroupLabel>{groupLabel}</SidebarGroupLabel>
+    <SidebarGroup className={atBottom ? 'mt-auto' : ""}>
+      <SidebarGroupLabel>{groupLabel && groupLabel}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
           if (item?.items) {
@@ -52,7 +53,7 @@ export default function NavGroup({ groupLabel, items }: {
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton tooltip={item.title}>
+                    <SidebarMenuButton tooltip={item.title} className={atBottom ? 'size-sm' : ""}>
                       {item.lucideIcon && <item.lucideIcon />}
                       {item.imageIcon && <Image src={item.imageIcon.src} alt={item.imageIcon.alt} width={item.imageIcon.width} height={item.imageIcon.height} className="size-4"/>}
                       <span>{item.title}</span>
@@ -77,11 +78,13 @@ export default function NavGroup({ groupLabel, items }: {
             )
           } else {
             return (
-                <SidebarMenuItem>
-                  <SidebarMenuButton tooltip={item.title}>
-                    {item.lucideIcon && <item.lucideIcon />}
-                    {item.imageIcon && <Image src={item.imageIcon.src} alt={item.imageIcon.alt} width={item.imageIcon.width} height={item.imageIcon.height} className="size-4"/>}
-                    <span>{item.title}</span>
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton tooltip={item.title} asChild size={atBottom ? "sm": null}>
+                    <a href={item.url}>
+                      {item.lucideIcon && <item.lucideIcon />}
+                      {item.imageIcon && <Image src={item.imageIcon.src} alt={item.imageIcon.alt} width={item.imageIcon.width} height={item.imageIcon.height} className="size-4"/>}
+                      <span>{item.title}</span>
+                    </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
             )

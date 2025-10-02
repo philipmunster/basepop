@@ -6,14 +6,30 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton
 } from "@/components/ui/sidebar"
-import NavGroup from '@/app/appComponents/NavGroup'
-import { LayoutDashboard, Newspaper, Megaphone } from 'lucide-react'
+import { 
+  Avatar, 
+  AvatarFallback, 
+  AvatarImage 
+} from "@/components/ui/avatar"
+import NavMain from '@/app/appComponents/NavMain'
+import { LayoutDashboard, Newspaper, Megaphone, Send, LifeBuoy, Settings } from 'lucide-react'
+import NavHeader from "@/app/appComponents/NavHeader"
+import NavFooter from '@/app/appComponents/NavFooter'
+
+const navCompanyData = {
+  logoSrc: '/exampleLogo.png',
+  name: 'Philips frugt',
+  plan: 'Premium plan'
+}
 
 const navUserData =  {
-  name: "Your company",
+  name: "Philip Munster Hansen",
   email: "example@company.com",
-  avatar: "",
+  avatar: "/exampleUser.jpeg",
 }
 
 const DashboardGroupItems = [
@@ -118,7 +134,7 @@ const navNewsGroup = [
 
 const AIchangelogGroup = [
   {
-    title: "Shopify",
+    title: "Shopify changelog",
     url: "#",
     imageIcon: {
       src: '/icons/icon-shopify.png',
@@ -128,7 +144,7 @@ const AIchangelogGroup = [
     },
   },
   {
-    title: "Meta ads",
+    title: "Meta ads changelog",
     url: "#",
     imageIcon: {
       src: '/icons/icon-meta.png',
@@ -138,7 +154,7 @@ const AIchangelogGroup = [
     },
   },
   {
-    title: "Google ads",
+    title: "Google ads changelog",
     url: "#",
     imageIcon: {
       src: '/icons/icon-google.png',
@@ -149,24 +165,39 @@ const AIchangelogGroup = [
   }
 ]
 
+const supportGroup = [
+  {
+    title: "Settings",
+    url: "#",
+    lucideIcon: Settings
+  },
+  {
+    title: "Support",
+    url: "#",
+    lucideIcon: LifeBuoy
+  },
+  {
+    title: "Give feedback",
+    url: "#",
+    lucideIcon: Send
+  },
+]
 
+console.log('hey')
 
 export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        Header
-      </SidebarHeader>
+      <NavHeader companyData={navCompanyData}/>
       <SidebarContent>
-        <NavGroup groupLabel="Dashboard" items={DashboardGroupItems} />
-        <NavGroup groupLabel="News" items={navNewsGroup} />
-        <NavGroup groupLabel="AI changelog" items={AIchangelogGroup} />
-        {/* <NavProjects projects={navNewsGroup} /> */}
+        <NavMain groupLabel="Dashboard" items={DashboardGroupItems} />
+        <NavMain groupLabel="News" items={navNewsGroup} />
+        <NavMain groupLabel="AI changelog" items={AIchangelogGroup} />
+        <NavMain items={supportGroup} atBottom={true} />
       </SidebarContent>
       <SidebarFooter>
-        Footer
-        {/* <NavUser user={navUserData} /> */}
+        <NavFooter user={navUserData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
