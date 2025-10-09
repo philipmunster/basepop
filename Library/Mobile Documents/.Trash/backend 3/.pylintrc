@@ -1,0 +1,19 @@
+[MASTER]
+# Set the maximum number of characters on a single line
+max-line-length=100
+
+[FORMAT]
+# Use spaces around operators
+space-around-operators=yes
+
+[MESSAGES CONTROL]
+# Disable the message for missing module docstring
+disable=missing-module-docstring
+
+[DESIGN]
+# Maximum number of arguments for a function
+max-args=5
+
+[TYPECHECK]
+# Enable type checking
+enable-type-checking=yes
