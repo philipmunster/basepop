@@ -14,12 +14,19 @@
 # testing
 /coverage
 
-# next.js
+# next.js (ignore in all packages/apps)
 /.next/
+**/.next/
 /out/
+**/out/
+
+# turbo (local incremental cache/artifacts)
+/.turbo/
+**/.turbo/
 
 # production
 /build
+**/build
 
 # misc
 .DS_Store
