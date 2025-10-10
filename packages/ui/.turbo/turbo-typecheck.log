@@ -1,0 +1,5 @@
+
+
+> @basepop/ui@0.0.0 typecheck /Users/philiphansen/Documents/dev/github/basepopV2/packages/ui
+> tsc -p tsconfig.build.json
+

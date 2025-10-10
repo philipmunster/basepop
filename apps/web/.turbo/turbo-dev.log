@@ -1,0 +1,15 @@
+
+
+> @basepop/web@0.1.0 dev /Users/philiphansen/Documents/dev/github/basepop/apps/web
+> next dev --turbopack
+
+   [1m[38;2;173;127;168m▲ Next.js 15.5.4[39m[22m (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.10.90:3000
+
+ [32m[1m✓[22m[39m Starting...
+ [32m[1m✓[22m[39m Ready in 954ms
+ [37m[1m○[22m[39m Compiling / ...
+ [32m[1m✓[22m[39m Compiled / in 1706ms
+ GET / [32m200[39m in 2053ms
+[?25h

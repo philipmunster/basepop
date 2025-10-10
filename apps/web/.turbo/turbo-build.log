@@ -1,0 +1,7 @@
+
+
+> @basepop/web@0.1.0 build /Users/philiphansen/Documents/dev/github/basepopV2/apps/web
+> next build --turbopack
+
+   [1m[38;2;173;127;168m▲ Next.js 15.5.4[39m[22m (Turbopack)
+
