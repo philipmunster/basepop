@@ -1,9 +1,0 @@
-
-
-> @basepop/ui@0.0.0 dev /Users/philiphansen/Documents/dev/github/basepop/packages/ui
-> tsc -w -p tsconfig.build.json
-
-[2J[3J[H[[90m9:02:56 PM[0m] Starting compilation in watch mode...
-
-[[90m9:02:57 PM[0m] Found 0 errors. Watching for file changes.
-
