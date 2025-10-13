@@ -1,4 +1,5 @@
-import { db, org, orgMember, shopifyOrderFact } from './index.js'
+import { db } from './index'
+import { org, orgMember, shopifyOrderFact } from './schema'
 import { randomUUID } from 'node:crypto'
 
 async function main() {
