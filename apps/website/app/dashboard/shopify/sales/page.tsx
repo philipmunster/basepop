@@ -1,6 +1,7 @@
 import { Filter } from '@/app/appComponents/Filter'
 import { Suspense } from 'react'
 import { kpisUrl, type KPIsResponse } from '@/lib/kpis';
+import TestChart from '@/app/appComponents/ChartTest'
 
 type PageProps = {
   searchParams: 
@@ -23,6 +24,15 @@ const filters = [
   },
 ]
 
+const chartData = [
+  { month: "January", desktop: 186, mobile: 80 },
+  { month: "February", desktop: 305, mobile: 200 },
+  { month: "March", desktop: 237, mobile: 120 },
+  { month: "April", desktop: 73, mobile: 190 },
+  { month: "May", desktop: 209, mobile: 130 },
+  { month: "June", desktop: 214, mobile: 140 },
+]
+
 export default async function ShopifySalesPage(props: PageProps) {
   const searchParams = 
     props.searchParams instanceof Promise ? await props.searchParams : props.searchParams
@@ -43,7 +53,7 @@ export default async function ShopifySalesPage(props: PageProps) {
 
   const data = await res.json()
 
-  // console.log(data)
+  console.log(data.rows)
 
   return (
     <Suspense fallback={null}>
@@ -53,6 +63,7 @@ export default async function ShopifySalesPage(props: PageProps) {
          {/* dashbord */}
          <div className='p-5'>
           <p>{data.rows[0].aov}</p>
+          <TestChart chartData={data.rows}/>
          </div>
       </div>
     </Suspense>

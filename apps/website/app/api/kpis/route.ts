@@ -7,6 +7,7 @@ export async function GET(req: Request) {
   const orgId = searchParams.get('orgId')
   const from = searchParams.get('from') ? new Date(searchParams.get('from')!) : new Date(Date.now() - 90*24*3600*1000)
   const to = searchParams.get('to') ? new Date(searchParams.get('to')!) : new Date()
+  to.setDate(to.getDate() + 1) // move to one day to include the ending day
 
   if (!orgId) return NextResponse.json({ error: 'missing orgId' }, { status: 400 })
 
