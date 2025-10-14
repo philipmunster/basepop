@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import { orgMember } from '@repo/db'
 
 export async function resolveOrgId(userId: string) {
   const supabase = await createClient()
