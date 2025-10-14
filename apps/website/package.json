@@ -23,6 +23,8 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@repo/db": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.75.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

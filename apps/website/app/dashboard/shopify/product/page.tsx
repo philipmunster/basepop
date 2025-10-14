@@ -2,6 +2,12 @@ import { Filter } from '@/app/appComponents/Filter'
 import { Suspense } from 'react'
 import { kpisUrl, type KPIsResponse } from '@/lib/kpis';
 import TestChart from '@/app/appComponents/ChartTest'
+import { requireUser } from '@/lib/supabase/requireUser'
+import { resolveOrgId } from '@/lib/supabase/resolveOrgId'
+import { getKpisCached } from '@/lib/data/kpis'
+
+// because we call cookies() (via helper functions) we mark as dynamic
+export const dynamic = 'force-dynamic'
 
 type PageProps = {
   searchParams: 
@@ -33,27 +39,22 @@ const chartData = [
   { month: "June", desktop: 214, mobile: 140 },
 ]
 
-export default async function ShopifySalesPage(props: PageProps) {
+export default async function ShopifyProductPage(props: PageProps) {
+  const user = await requireUser()
+  const orgId = await resolveOrgId(user.id)
+
+  console.log(user, orgId)
+
   const searchParams = 
     props.searchParams instanceof Promise ? await props.searchParams : props.searchParams
-
-  const orgId = (searchParams.orgId as string) || 'ce7f0891-2aad-435e-aacc-dc5534df42bb'
   const from = (searchParams.dateFrom as string) ?? '2025-07-17'
   const to = (searchParams.dateTo as string) ?? '2025-07-20'
-  
-  const url = kpisUrl(process.env.NEXT_PUBLIC_APP_URL!, orgId, from, to)
 
-  const res = await fetch(url, {
-    cache: 'no-store'
+  const rows = await getKpisCached({
+    orgId,
+    fromISO: from,
+    toISO: to,
   })
-
-  if (!res.ok) {
-    return <div className='p-6 text-red-600'>Failed to load</div>
-  }
-
-  const data = await res.json()
-
-  console.log(data.rows)
 
   return (
     <Suspense fallback={null}>
@@ -62,7 +63,7 @@ export default async function ShopifySalesPage(props: PageProps) {
 
          {/* dashbord */}
          <div className='p-5'>
-          <TestChart chartData={data.rows}/>
+          <TestChart chartData={rows}/>
          </div>
       </div>
     </Suspense>
