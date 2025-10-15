@@ -16,17 +16,24 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 const now = new Date()
 
 export default function DatePicker() {
-  const [open, setOpen] = useState(false)
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: new Date(now.getFullYear(), now.getMonth(), 1),
-    to: new Date(now),
-  })
-  const [activePreset, setActivePreset] = useState('This month to date')
-  const [appliedDateRange, setAppliedDateRange] = useState<DateRange | undefined>(dateRange)
-
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const params = new URLSearchParams(searchParams)
+
+  const spFromParam = params.get('dateFrom')
+  const spToParam = params.get('dateTo')
+
+  const spFrom = spFromParam ? new Date(spFromParam) : new Date(now.getFullYear(), now.getMonth(), 1)
+  const spTo = spToParam ? new Date(spToParam) : new Date(now)
+
+  const [open, setOpen] = useState(false)
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: spFrom,
+    to: spTo,
+  })
+  const [activePreset, setActivePreset] = useState('This month to date')
+  const [appliedDateRange, setAppliedDateRange] = useState<DateRange | undefined>(dateRange)
 
   function pad(n: number) { return n < 10 ? `0${n}` : String(n) }
   function formatYMD(d: Date) {

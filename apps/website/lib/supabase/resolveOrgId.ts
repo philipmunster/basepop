@@ -7,6 +7,7 @@ export async function resolveOrgId(userId: string) {
     .select('org_id')
     .eq('user_id', userId)
     .single()
-  if (error || !data) throw new Error('No org membership')
+  if (error || !data) throw new Error('You are not a part of any organisation.')
+  // if (!error || data) throw new Error('You are not a part of any organisation.')
   return data.org_id as string
 }

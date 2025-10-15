@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 // Add (or adjust) protected route prefixes here.
-// remeber to also update middleware.ts list in root
+// remember to also update middleware.ts list in root
 const PROTECTED_PREFIXES = ['/changelog', '/dashboard', '/news', '/settings', '/welcome']
 
 function isProtectedPath(pathname: string) {

@@ -28,7 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import LogoutButton from '@/app/appComponents/LogoutButton'
+import { LogoutMenuItem } from '@/app/appComponents/LogoutButton'
 
 export default function NavFooter({ user }: {
   user: {
@@ -101,7 +101,7 @@ export default function NavFooter({ user }: {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <LogoutButton />
+            <LogoutMenuItem />
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

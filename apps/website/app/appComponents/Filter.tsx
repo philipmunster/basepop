@@ -169,7 +169,7 @@ function FilterSelectMultiple({label, options}: {label: string, options: string[
         <DropdownMenuLabel className='text-sm font-medium mb-1 ml-2'>Options</DropdownMenuLabel>
         {hasSearchResults
           ? (
-              <DropdownMenuGroup className='flex flex-col gap-2 max-h-80 overflow-auto scroll-auto scroll'>
+            <DropdownMenuGroup className='flex flex-col gap-2 max-h-80 overflow-auto scroll-auto scroll'>
                 {filteredOptions.map((option) => {
                   const optionLowercase = option.toLocaleLowerCase().split(' ').join('-')
                   return (
