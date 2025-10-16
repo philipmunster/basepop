@@ -12,6 +12,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { type DateRange } from "react-day-picker"
+import { datePresetsArray } from '@repo/db'
+
+type DatePresetLabel = (typeof datePresetsArray)[number]
+
+type datePresetObj = {
+  label: DatePresetLabel
+  dateRange: {
+    from: Date
+    to: Date
+  }
+}
+
+type datePresetObjSub = {
+  label: string
+  subs: datePresetObj[]
+}
 
 const now = new Date();
 
@@ -44,54 +60,76 @@ const endOfQuarter = (d: Date) => endOfDay(new Date(d.getFullYear(), quarterInde
 const startOfYear = (d: Date) => startOfDay(new Date(d.getFullYear(), 0, 1));
 const endOfYear   = (d: Date) => endOfDay(new Date(d.getFullYear(), 11, 31));
 
+export const lastNDays = (n: number) => ({
+  from: startOfDay(addDays(yesterday, -(n - 1))),
+  to: endOfDay(yesterday),
+});
+
 // convenience anchors
 const today = startOfDay(now);
 const yesterday = addDays(today, -1);
 const yesterdayLastYear = addYears(yesterday, -1);
 
 // --- presets ---
-const presetOptions = [
+export const presetOptions: (datePresetObj | datePresetObjSub)[] = [
   {
     label: 'Yesterday',
-    dateRange: {
-      from: startOfDay(yesterday),
-      to: endOfDay(yesterday),
-    },
+    dateRange: lastNDays(1),
+  },
+  {
+    label: 'Last 7 days',
+    dateRange: lastNDays(7),
+  },
+  {
+    label: 'Last 30 days',
+    dateRange: lastNDays(30),
+  },
+  {
+    label: 'Last 60 days',
+    dateRange: lastNDays(60),
+  },
+  {
+    label: 'Last 90 days',
+    dateRange: lastNDays(90),
+  },
+  {
+    label: 'Last 365 days',
+    dateRange: lastNDays(365),
   },
   {
     label: 'Week',
     subs: [
       {
-        subLabel: 'This week to yesterday',
-        subDateRange: {
+        label: 'This week to yesterday',
+        dateRange: {
           from: startOfWeek(now),
           to: endOfDay(yesterday),
         },
       },
       {
-        subLabel: 'Last week',
-        subDateRange: {
+        label: 'Last week',
+        dateRange: {
           from: startOfWeek(addDays(now, -7)),
           to: endOfWeek(addDays(now, -7)),
         },
       },
       {
-        subLabel: '2 weeks ago',
-        subDateRange: {
+        label: '2 weeks ago',
+        dateRange: {
           from: startOfWeek(addDays(now, -14)),
           to: endOfWeek(addDays(now, -14)),
         },
       },
       {
-        subLabel: 'This week last year',
-        subDateRange: {
+        label: 'This week last year',
+        dateRange: {
           from: startOfWeek(addYears(now, -1)),
           to: endOfWeek(addYears(now, -1)),
         },
       },
       {
-        subLabel: 'This week to yesterday last year',
-        subDateRange: {
+        label: 'This week to yesterday last year',
+        dateRange: {
           from: startOfWeek(yesterdayLastYear),
           to: endOfDay(yesterdayLastYear),
         },
@@ -102,36 +140,36 @@ const presetOptions = [
     label: 'Month',
     subs: [
       {
-        subLabel: 'This month to yesterday',
-        subDateRange: {
+        label: 'This month to yesterday',
+        dateRange: {
           from: startOfMonth(now),
           to: endOfDay(yesterday),
         },
       },
       {
-        subLabel: 'Last month',
-        subDateRange: {
+        label: 'Last month',
+        dateRange: {
           from: startOfMonth(addMonths(now, -1)),
           to: endOfMonth(addMonths(now, -1)),
         },
       },
       {
-        subLabel: '2 months ago',
-        subDateRange: {
+        label: '2 months ago',
+        dateRange: {
           from: startOfMonth(addMonths(now, -2)),
           to: endOfMonth(addMonths(now, -2)),
         },
       },
       {
-        subLabel: 'This month last year',
-        subDateRange: {
+        label: 'This month last year',
+        dateRange: {
           from: startOfMonth(addYears(now, -1)),
           to: endOfMonth(addYears(now, -1)),
         },
       },
       {
-        subLabel: 'This month to yesterday last year',
-        subDateRange: {
+        label: 'This month to yesterday last year',
+        dateRange: {
           from: startOfMonth(addYears(now, -1)),
           to: endOfDay(addYears(yesterday, -1)),
         },
@@ -142,36 +180,36 @@ const presetOptions = [
     label: 'Quarter',
     subs: [
       {
-        subLabel: 'This quarter to yesterday',
-        subDateRange: {
+        label: 'This quarter to yesterday',
+        dateRange: {
           from: startOfQuarter(now),
           to: endOfDay(yesterday),
         },
       },
       {
-        subLabel: 'Last quarter',
-        subDateRange: {
+        label: 'Last quarter',
+        dateRange: {
           from: startOfQuarter(addMonths(now, -3)),
           to: endOfQuarter(addMonths(now, -3)),
         },
       },
       {
-        subLabel: '2 quarters ago',
-        subDateRange: {
+        label: '2 quarters ago',
+        dateRange: {
           from: startOfQuarter(addMonths(now, -6)),
           to: endOfQuarter(addMonths(now, -6)),
         },
       },
       {
-        subLabel: 'This quarter last year',
-        subDateRange: {
+        label: 'This quarter last year',
+        dateRange: {
           from: startOfQuarter(addYears(now, -1)),
           to: endOfQuarter(addYears(now, -1)),
         },
       },
       {
-        subLabel: 'This quarter to yesterday last year',
-        subDateRange: {
+        label: 'This quarter to yesterday last year',
+        dateRange: {
           from: startOfQuarter(addYears(now, -1)),
           to: endOfDay(addYears(yesterday, -1)),
         },
@@ -182,29 +220,29 @@ const presetOptions = [
     label: 'Year',
     subs: [
       {
-        subLabel: 'This year to yesterday',
-        subDateRange: {
+        label: 'This year to yesterday',
+        dateRange: {
           from: startOfYear(now),
           to: endOfDay(yesterday),
         },
       },
       {
-        subLabel: 'Last year',
-        subDateRange: {
+        label: 'Last year',
+        dateRange: {
           from: startOfYear(addYears(now, -1)),
           to: endOfYear(addYears(now, -1)),
         },
       },
       {
-        subLabel: '2 years ago',
-        subDateRange: {
+        label: '2 years ago',
+        dateRange: {
           from: startOfYear(addYears(now, -2)),
           to: endOfYear(addYears(now, -2)),
         },
       },
       {
-        subLabel: 'Last year to yesterday',
-        subDateRange: {
+        label: 'Last year to yesterday',
+        dateRange: {
           from: startOfYear(addYears(now, -1)),
           to: endOfDay(addYears(yesterday, -1)),
         },
@@ -213,7 +251,7 @@ const presetOptions = [
   },
 ];
 
-export default function DatePickerPresets({ activePreset, setActivePreset, setDateRange }: {
+export function DatePickerPresets({ activePreset, setActivePreset, setDateRange }: {
   activePreset: string
   setActivePreset: React.Dispatch<React.SetStateAction<string>>;
   setDateRange: React.Dispatch<React.SetStateAction<DateRange | undefined>>
@@ -229,7 +267,7 @@ export default function DatePickerPresets({ activePreset, setActivePreset, setDa
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           {presetOptions.map((option) => {
-            if (option.dateRange) {
+            if ("dateRange" in option) {
               return (
                 <DropdownMenuCheckboxItem key={option.label} className="text-xs" checked={activePreset === option.label} onCheckedChange={() => {
                   setActivePreset(option.label) 
@@ -250,12 +288,12 @@ export default function DatePickerPresets({ activePreset, setActivePreset, setDa
                       <DropdownMenuSubContent>
                         {option?.subs?.map((subOption) => {
                           return (
-                            <DropdownMenuCheckboxItem key={subOption.subLabel} className="text-xs" checked={activePreset === subOption.subLabel} onCheckedChange={() => {
-                              setActivePreset(subOption.subLabel) 
-                              setDateRange(subOption.subDateRange)
+                            <DropdownMenuCheckboxItem key={subOption.label} className="text-xs" checked={activePreset === subOption.label} onCheckedChange={() => {
+                              setActivePreset(subOption.label) 
+                              setDateRange(subOption.dateRange)
                             }}
                             >
-                              {subOption.subLabel}
+                              {subOption.label}
                             </DropdownMenuCheckboxItem>
                           )
                         })}

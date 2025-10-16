@@ -1,9 +1,19 @@
-
 import { unstable_cache } from 'next/cache'
 import { db, shopifyOrderFact } from '@repo/db'
 import { and, eq, gte, lt, sql } from 'drizzle-orm'
 
-async function rawGetKpis(orgId: string, from: Date, to: Date) {
+async function rawGetKpis({ 
+  orgId,
+  dateRange
+}: { 
+  orgId: string;
+  dateRange: {
+    from: Date
+    to: Date
+  }
+}) {
+  console.log('Cache not hit')
+
   try {
     const rows = await db
       .select({
@@ -15,8 +25,8 @@ async function rawGetKpis(orgId: string, from: Date, to: Date) {
       .from(shopifyOrderFact)
       .where(and(
         eq(shopifyOrderFact.orgId, orgId),
-        gte(shopifyOrderFact.createdAt, from),
-        lt(shopifyOrderFact.createdAt, to)
+        gte(shopifyOrderFact.createdAt, dateRange.from),
+        lt(shopifyOrderFact.createdAt, dateRange.to)
       ))
       .groupBy(sql`1`)
       .orderBy(sql`1`)
@@ -27,31 +37,37 @@ async function rawGetKpis(orgId: string, from: Date, to: Date) {
   }
 }
 
-/**
- * Returns KPIs with caching keyed by org + date range.
- * Adds a global tag 'kpis' and a per-org tag for selective invalidation.
- */
-export async function getKpisCached({ orgId, fromISO, toISO }: 
-  { orgId: string; fromISO: string; toISO: string }
-) {
-  const from = new Date(fromISO)
-  const toInclusive = new Date(toISO)
-  toInclusive.setDate(toInclusive.getDate() + 1) // make upper bound exclusive
+export async function getKpisCached({ 
+  orgId,
+  dateRange
+}: { 
+  orgId: string;
+  dateRange: {
+    from: Date
+    to: Date
+  }
+}) {
 
   const keyParts = [
     'kpis',
     orgId,
-    from.toISOString().slice(0, 10),
-    toInclusive.toISOString().slice(0, 10),
+    dateRange.from.toISOString().slice(0, 10),
+    dateRange.to.toISOString().slice(0, 10),
   ]
 
   const cachedFn = unstable_cache(
-    async () => rawGetKpis(orgId, from, toInclusive),
+    async () => rawGetKpis({orgId, dateRange}),
     keyParts,
     {
       tags: ['kpis', `kpis:org:${orgId}`],
     }
   )
 
-  return cachedFn()
+  const isDev = process.env.NODE_ENV === 'development'
+
+  if (isDev) {
+    return rawGetKpis({orgId, dateRange})
+  } else {
+    return cachedFn()
+  }
 }

@@ -3,11 +3,19 @@ import { Separator } from "@/components/ui/separator"
 import DashboardTitle from "@/app/appComponents/DashboardTitle"
 import CurrencySelector from "@/app/appComponents/CurrencySelector"
 import DatePicker from "@/app/appComponents/DatePicker"
-import { ListFilter } from 'lucide-react'
-import { Toggle } from "@/components/ui/toggle"
+import { requireUser } from '@/lib/supabase/requireUser'
+import { resolveOrgId } from '@/lib/supabase/resolveOrgId'
+import { getDateRange } from '@/lib/data/getDateRange'
 
 
-export default function LayoutDashboard({ children }: Readonly<{children: React.ReactNode}>) {
+export default async function LayoutDashboard({ children }: Readonly<{children: React.ReactNode}>) {
+  const user = await requireUser() // throws error on failure (should not happen since middleware would redirect to /login)
+  const orgId = await resolveOrgId(user.id) // throws error on failure
+
+  const defaultPreset = await getDateRange(orgId, user.id)
+
+  // using cache? how to see and turn off for dev??
+  // console.log(defaultPreset)
 
   return (
     <div>
@@ -17,7 +25,7 @@ export default function LayoutDashboard({ children }: Readonly<{children: React.
         <DashboardTitle />
         <div className="ml-auto flex gap-2 items-center">
           {/* <Toggle variant='outline'><ListFilter /></Toggle> */}
-          <DatePicker />
+          <DatePicker defaultPreset={defaultPreset}/>
           <CurrencySelector />
         </div>
       </div>

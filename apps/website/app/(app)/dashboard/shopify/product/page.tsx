@@ -5,9 +5,7 @@ import { requireUser } from '@/lib/supabase/requireUser'
 import { resolveOrgId } from '@/lib/supabase/resolveOrgId'
 import { getKpisCached } from '@/lib/data/kpis'
 import ErrorCard from '@/app/appComponents/ErrorCard'
-
-// because we call cookies() (via helper functions) we mark as dynamic
-export const dynamic = 'force-dynamic'
+import { getDateRange } from '@/lib/data/getDateRange'
 
 type PageProps = {
   searchParams: 
@@ -46,13 +44,13 @@ export default async function ShopifyProductPage(props: PageProps) {
 
     const searchParams = 
       props.searchParams instanceof Promise ? await props.searchParams : props.searchParams
-    const from = (searchParams.dateFrom as string) ?? '2025-07-17'
-    const to = (searchParams.dateTo as string) ?? '2025-07-20'
+
+    // gets the dateRange from searchParams if available, otherwise from DB default dateRange settings
+    const { dateRange } = await getDateRange(orgId, user.id, searchParams)
 
     const rows = await getKpisCached({
       orgId,
-      fromISO: from,
-      toISO: to,
+      dateRange
     })
 
     return (
