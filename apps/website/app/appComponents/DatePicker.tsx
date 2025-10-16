@@ -10,23 +10,40 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { type DateRange } from "react-day-picker"
-import DatePickerPresets from '@/app/appComponents/DatePickerPresets'
+import {DatePickerPresets, lastNDays} from '@/app/appComponents/DatePickerPresets'
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { endOfYesterday } from "date-fns"
 
 const now = new Date()
 
-export default function DatePicker() {
-  const [open, setOpen] = useState(false)
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: new Date(now.getFullYear(), now.getMonth(), 1),
-    to: new Date(now),
-  })
-  const [activePreset, setActivePreset] = useState('This month to date')
-  const [appliedDateRange, setAppliedDateRange] = useState<DateRange | undefined>(dateRange)
-
+export default function DatePicker({ defaultPreset } : { 
+  defaultPreset: { 
+    label: string | undefined
+    dateRange: {
+      from: Date, 
+      to: Date
+    }
+  }
+}) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const params = new URLSearchParams(searchParams)
+
+  const spFromParam = params.get('dateFrom')
+  const spToParam = params.get('dateTo')
+
+  const spFrom = spFromParam ? new Date(spFromParam) : defaultPreset.dateRange.from
+  const spTo = spToParam ? new Date(spToParam) : defaultPreset.dateRange.to
+
+  const [open, setOpen] = useState(false)
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: spFrom,
+    to: spTo,
+  })
+  const [activePreset, setActivePreset] = useState(defaultPreset.label || 'Last 30 days')
+  const [appliedPreset, setAppliedPreset] = useState(defaultPreset.label)
+  const [appliedDateRange, setAppliedDateRange] = useState<DateRange | undefined>(dateRange)
 
   function pad(n: number) { return n < 10 ? `0${n}` : String(n) }
   function formatYMD(d: Date) {
@@ -49,11 +66,13 @@ export default function DatePicker() {
           <Button
             variant="outline"
             id="date"
-            className="w-68 font-normal flex justify-start"
+            className="w-auto font-normal flex justify-start"
           >
             <CalendarDays />
             {appliedDateRange 
-              ? `${appliedDateRange?.from?.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric',})} - ${appliedDateRange?.to?.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric',})}` 
+              ? appliedPreset
+                ? appliedPreset
+                : `${appliedDateRange?.from?.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric',})} - ${appliedDateRange?.to?.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric',})}` 
               : "Select date"}
             <ChevronDown className="ml-auto"/>
           </Button>
@@ -70,7 +89,7 @@ export default function DatePicker() {
             captionLayout='dropdown'
             showOutsideDays={false}
             endMonth={new Date()}
-            disabled={{after: new Date()}}
+            disabled={{after: new Date(endOfYesterday())}}
             excludeDisabled
             className="w-full"
           />
@@ -79,6 +98,7 @@ export default function DatePicker() {
               setAppliedDateRange(dateRange)
               setOpen(false)
               updateSearchParams(dateRange)
+              setAppliedPreset(activePreset)
             }
           }}>
             Apply
