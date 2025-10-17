@@ -1,5 +1,5 @@
-import { getOrgMemberSettingsCached } from '@/lib/data/getOrgMemberSettings'
-import { rangeFromDatePreset } from '@/lib/data/rangeFromDatePreset'
+import { getOrgMemberSettingsCached } from '@/lib/data/memberSettings'
+import { rangeFromDatePreset } from '@/lib/utils/rangeFromDatePreset'
 import { DataFetchError } from '@/lib/errors/classes'
 
 // gets the dateRange from searchParams if available, otherwise from DB default dateRange settings

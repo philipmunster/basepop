@@ -1,11 +1,11 @@
 import { Filter } from '@/app/appComponents/Filter'
 import { Suspense } from 'react'
 import TestChart from '@/app/appComponents/ChartTest'
-import { requireUser } from '@/lib/supabase/requireUser'
-import { resolveOrgId } from '@/lib/supabase/resolveOrgId'
+import { requireUser } from '@/lib/supabase/auth/requireUser'
+import { resolveOrgId } from '@/lib/supabase/auth/resolveOrgId'
 import { getKpisCached } from '@/lib/data/kpis'
 import ErrorCard from '@/app/appComponents/ErrorCard'
-import { getDateRange } from '@/lib/data/getDateRange'
+import { getDateRange } from '@/lib/utils/getDateRange'
 import { ValidationError, AuthError, OrgResolutionError, DataFetchError } from '@/lib/errors/classes'
 
 type PageProps = {
