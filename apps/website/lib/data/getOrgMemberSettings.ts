@@ -1,7 +1,9 @@
 import { db, orgMemberSettings, type DatePresetLabel } from '@repo/db'
 import { and, eq } from 'drizzle-orm'
-import { unstable_cache } from 'next/cache';
+import { unstable_cache } from 'next/cache'
+import { DataFetchError } from '@/lib/errors/classes';
 
+// this function is for example called by getDateRange() which is called by the /dashboard layout
 export async function getOrgMemberSettings(orgId: string, userId: string): Promise<{ datePreset: DatePresetLabel; timeZone: string }> {
   try {
     const row = await db
@@ -17,15 +19,18 @@ export async function getOrgMemberSettings(orgId: string, userId: string): Promi
       .limit(1)
       .then(r => r[0])
 
-    if (!row) {
-      // defaults if user has no saved settings
+    if (!row) { // return default values if user has no saved settings (shouldn't happen cause default value is set in schema)
       return { datePreset: 'Last 30 days', timeZone: 'Europe/Copenhagen' }
     }
     return row
-  } catch (e) {
-    console.error('getOrgMemberSettings failed', { orgId, userId, error: e })
-    // on failure, fall back keep UI working
-    return { datePreset: 'Last 30 days', timeZone: 'Europe/Copenhagen' }
+  } catch (e) { // if an actual connection error with the DB ocurred
+    throw new DataFetchError('Error fetching org memeber settings data', {
+      cause: e,
+      meta: {
+        orgId,
+        userId
+      }
+    })
   }
 }
 

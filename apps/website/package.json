@@ -24,6 +24,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@repo/db": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@repo/zod": "workspace:*",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.75.0",
     "class-variance-authority": "^0.7.1",
@@ -36,7 +37,8 @@
     "react-day-picker": "^9.11.1",
     "react-dom": "19.1.0",
     "recharts": "2.15.4",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

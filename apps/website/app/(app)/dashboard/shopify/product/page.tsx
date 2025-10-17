@@ -6,6 +6,7 @@ import { resolveOrgId } from '@/lib/supabase/resolveOrgId'
 import { getKpisCached } from '@/lib/data/kpis'
 import ErrorCard from '@/app/appComponents/ErrorCard'
 import { getDateRange } from '@/lib/data/getDateRange'
+import { ValidationError, AuthError, OrgResolutionError, DataFetchError } from '@/lib/errors/classes'
 
 type PageProps = {
   searchParams: 
@@ -28,15 +29,6 @@ const filters = [
   },
 ]
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
-
 export default async function ShopifyProductPage(props: PageProps) {
   try {
     const user = await requireUser() // throws error on failure (should not happen since middleware would redirect to /login)
@@ -54,20 +46,51 @@ export default async function ShopifyProductPage(props: PageProps) {
     })
 
     return (
-      <Suspense fallback={null}>
-        <div>
+      <div>
            <Filter filters={filters} />
 
            {/* dashbord */}
            <div className='p-5'>
-            <TestChart chartData={rows}/>
+            <Suspense fallback={<h1>Loading chart data</h1>}>
+              <TestChart chartData={rows}/>
+            </Suspense>
            </div>
         </div>
-      </Suspense>
     )
   } catch(e: unknown) {
-    console.error('ShopifyProductPage', e)
-    const message = e instanceof Error ? e.message : 'An unexpected error ocurred when fetching the data'
+    // non-blocking errors
+    if (e instanceof ValidationError) {
+      const message = e.issues ? 'There is an error with your data filters' : e.message
+      console.warn('ValidationError in ShopifyProductPage', {
+        message
+      })
+      return (
+        // add a toast here, but we still want to show empty data cards right? Maybe with a finally clause?
+        <h1>Im a toast displaying {message}</h1>
+      )
+    }
+
+    // blocking errors
+    if (e instanceof AuthError || e instanceof OrgResolutionError) {
+      console.warn('Auth/Org error in ShopifyProductPage', { 
+        name: e.name, 
+        message: e.message 
+      })
+      return <ErrorCard>{e.message}</ErrorCard> 
+    }
+
+    if (e instanceof DataFetchError) {
+      console.error("Dashboard KPI fetch failed", {
+        error: e.message, // what I typed in the function when throwing error (show to user)
+        name: e.name, // name of the error class used i.e. DataFetchError
+        cause: e.cause instanceof Error ? e.cause.message : e.cause, // Drizzle error cause
+        meta: e.meta, // the filters used in the data fetch
+      })
+      return <ErrorCard>{e.message}</ErrorCard> 
+    }
+
+    console.error('Unexpected error in ShopifyProductPage', e)
+    const message = e instanceof Error ? e.message : 'An unexpected error occurred'
     return <ErrorCard>{message}</ErrorCard>
   }
 }

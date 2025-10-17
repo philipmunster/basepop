@@ -13,10 +13,7 @@ export default async function LayoutDashboard({ children }: Readonly<{children: 
   const orgId = await resolveOrgId(user.id) // throws error on failure
 
   const defaultPreset = await getDateRange(orgId, user.id)
-
-  // using cache? how to see and turn off for dev??
-  // console.log(defaultPreset)
-
+  
   return (
     <div>
       <div className="flex items-center gap-5 h-8">

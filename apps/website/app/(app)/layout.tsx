@@ -1,8 +1,7 @@
 import AppSidebar from '@/app/appComponents/AppSidebar'
 import {
   SidebarProvider,
-  SidebarInset,
-  SidebarTrigger
+  SidebarInset
 } from '@/components/ui/sidebar'
 
 export default function RootLayout({
