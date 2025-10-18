@@ -1,20 +1,19 @@
-import { db, orgMemberSettings, type DatePresetLabel } from '@repo/db'
+import { db, userSettings, type DatePresetLabel } from '@repo/db'
 import { and, eq } from 'drizzle-orm'
 import { unstable_cache } from 'next/cache'
 import { DataFetchError } from '@/lib/errors/classes';
 
 // this function is for example called by getDateRange() which is called by the /dashboard layout
-export async function getOrgMemberSettings(orgId: string, userId: string): Promise<{ datePreset: DatePresetLabel; timeZone: string }> {
+export async function getUserSettings(userId: string): Promise<{ datePreset: DatePresetLabel; timeZone: string }> {
   try {
     const row = await db
       .select({
-        datePreset: orgMemberSettings.datePreset,
-        timeZone: orgMemberSettings.timeZone,
+        datePreset: userSettings.datePreset,
+        timeZone: userSettings.timeZone,
       })
-      .from(orgMemberSettings)
+      .from(userSettings)
       .where(and(
-        eq(orgMemberSettings.orgId, orgId),
-        eq(orgMemberSettings.userId, userId)
+        eq(userSettings.userId, userId)
       ))
       .limit(1)
       .then(r => r[0])
@@ -27,25 +26,23 @@ export async function getOrgMemberSettings(orgId: string, userId: string): Promi
     throw new DataFetchError('Error fetching org memeber settings data', {
       cause: e,
       meta: {
-        orgId,
         userId
       }
     })
   }
 }
 
-export async function getOrgMemberSettingsCached(orgId: string, userId: string): Promise<{ datePreset: DatePresetLabel; timeZone: string }> {
+export async function getUserSettingsCached(userId: string): Promise<{ datePreset: DatePresetLabel; timeZone: string }> {
   const keyparts = [
-    'getOrgMemberSettings',
-    orgId,
+    'getUserSettings',
     userId,
   ]
 
   const cacheFn = unstable_cache(
-    async () => getOrgMemberSettings(orgId, userId),
+    async () => getUserSettings(userId),
     keyparts,
     {
-      tags: ['getOrgMemberSettings', `getOrgMemberSettings:orgId:${orgId}:userId:${userId}`],
+      tags: ['getUserSettings', `getUserSettings:userId:${userId}`],
     }
   )
 

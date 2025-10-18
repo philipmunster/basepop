@@ -1,0 +1,2 @@
+ALTER TABLE "org" ADD COLUMN "createdBy" uuid;--> statement-breakpoint
+ALTER TABLE "org" ADD CONSTRAINT "org_createdBy_user_id_fk" FOREIGN KEY ("createdBy") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;

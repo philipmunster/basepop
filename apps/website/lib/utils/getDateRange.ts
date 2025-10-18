@@ -1,4 +1,4 @@
-import { getOrgMemberSettingsCached } from '@/lib/data/memberSettings'
+import { getUserSettingsCached } from '@/lib/data/userSettings'
 import { rangeFromDatePreset } from '@/lib/utils/rangeFromDatePreset'
 import { DataFetchError } from '@/lib/errors/classes'
 
@@ -19,7 +19,7 @@ export async function getDateRange(orgId: string, userId: string, searchParams: 
   } else { // else get the org members default dateRange settings from DB
     // try to fetch the data of the DB
     try {      
-      const { datePreset } = await getOrgMemberSettingsCached(orgId, userId)
+      const { datePreset } = await getUserSettingsCached(userId)
       const settingsDefaultDateRange = rangeFromDatePreset(datePreset)
       label =  datePreset
       from = settingsDefaultDateRange.from
