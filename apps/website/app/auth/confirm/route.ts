@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     // get user from auth table
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
-      redirect('/login')
+      redirect(`/auth/error?reason=user_not_found`)
     }
 
     // get orgName from cookie
