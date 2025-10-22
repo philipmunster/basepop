@@ -42,7 +42,7 @@ const icons: Record<string, IconObj> = {
       height: 92
     }
   },
-} as const
+}
 
 export default function DashboardTitle() {
   const pathName = usePathname()
