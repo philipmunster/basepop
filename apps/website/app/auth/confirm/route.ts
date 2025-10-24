@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     // get orgName from cookie
     const cookieStore = await cookies()
-    const orgName = cookieStore.get('pending_org')?.value ?? 'My organisation'
+    const orgName = cookieStore.get('pending_orgName')?.value ?? 'My organisation'
 
     console.log(user)
     // fill the DB for the new user i.e. user row, org row, org member row, user settings row and org settings row
