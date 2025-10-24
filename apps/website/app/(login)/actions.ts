@@ -4,7 +4,6 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
-import { createUserSchema } from '@repo/zod/createUser'
 
 export async function login(formData: FormData) {
   const supabase = await createClient()
