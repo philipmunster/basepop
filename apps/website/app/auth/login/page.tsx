@@ -1,4 +1,6 @@
-import { login } from '../actions'
+import { login } from './actions'
+
+// remember a link to "Forgot your password?"
 
 export default function LoginPage() {
   return (

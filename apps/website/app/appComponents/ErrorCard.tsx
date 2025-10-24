@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Empty,
   EmptyContent,
@@ -7,27 +9,31 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { Button } from "@/components/ui/button"
-import { ArrowUpRightIcon, BugIcon } from "lucide-react"
+import { ArrowUpRightIcon, BugIcon, RotateCcwIcon } from "lucide-react"
 import Link from 'next/link'
 import { LogoutButton } from '@/app/appComponents/LogoutButton'
+import { useRouter } from 'next/navigation'
 
 export default function ErrorCard({ children }: 
   { children: Readonly<React.ReactNode>}) {
+    const router = useRouter()
+
     return (
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon" className="bg-destructive/10 text-destructive">
             <BugIcon />
           </EmptyMedia>
-          <EmptyTitle>Oooops... An unexpected error ocurred</EmptyTitle>
+          <EmptyTitle>Oooops... An error ocurred</EmptyTitle>
           <EmptyDescription>
             <p>An error with the following message ocurred: <span className="font-semibold">{children}.</span></p>
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
           <div className="flex gap-2">
-            <LogoutButton />
-            <Button variant="outline"><Link href='/welcome'>Go to front page</Link></Button>
+            {/* <LogoutButton /> */}
+            <Button onClick={() => router.back()}>Try again <RotateCcwIcon /></Button>
+            <Button variant="outline"><Link href='/welcome'>Go to start page</Link></Button>
           </div>
         </EmptyContent>
         <EmptyDescription>
