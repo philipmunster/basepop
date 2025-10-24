@@ -3,21 +3,31 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { loginSchema, loginType } from '@repo/zod/login'
+import { ValidationError } from '@/lib/errors/classes'
+import { isRedirectError } from 'next/dist/client/components/redirect-error'
 
-export async function login(formData: FormData) {
+export async function login(data: loginType) {
+
   const supabase = await createClient()
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+  const parsed = loginSchema.safeParse(data)
+  if (!parsed.success) {
+    throw new ValidationError('Your email or password is not correct', parsed.error.format())
   }
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+  const parsedData = parsed.data
+  const cleanedEmail = parsedData.email.trim().toLocaleLowerCase()
+
+  const authData = {
+    email: cleanedEmail,
+    password: parsedData.password,
+  }
+
+  const { error } = await supabase.auth.signInWithPassword(authData)
 
   if (error) {
-    redirect('/auth/error')
+    throw error
   }
   // clear any cached version of /welcome so the next user gets a fresh render with updated session state (e.g., logged-in user info).
   revalidatePath('/welcome/', 'layout')
