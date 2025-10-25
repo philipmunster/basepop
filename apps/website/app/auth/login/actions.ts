@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { loginSchema, loginType } from '@repo/zod/login'
 import { ValidationError } from '@/lib/errors/classes'
-import { isRedirectError } from 'next/dist/client/components/redirect-error'
 
 export async function login(data: loginType) {
 
