@@ -1,4 +1,3 @@
-"use client"
 
 import {
   Sidebar,
@@ -7,32 +6,21 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import NavMain from '@/app/appComponents/NavMain'
-import { LayoutDashboard, Newspaper, Megaphone, Send, LifeBuoy, Settings } from 'lucide-react'
 import NavHeader from "@/app/appComponents/NavHeader"
 import NavFooter from '@/app/appComponents/NavFooter'
-
-const navCompanyData = {
-  logoSrc: '/exampleLogo.png',
-  name: 'Philips frugt',
-  plan: 'Premium plan'
-}
-
-const navUserData =  {
-  name: "Philip Munster Hansen",
-  email: "example@company.com",
-  avatar: "/exampleUser.jpeg",
-}
+import { requireUser } from "@/lib/supabase/auth/requireUser"
+import { db } from "@repo/db"
 
 const DashboardGroupItems = [
   {
     title: "Overview",
     url: "/dashboard/overview",
-    lucideIcon: LayoutDashboard,
+    icon: "layoutDashboard" as const,
     isActive: true,
     items: [
       {
         title: "Business",
-        url: "/dashboard/overview/busienss",
+        url: "/dashboard/overview/business",
       },
       {
         title: "Marketing",
@@ -114,12 +102,12 @@ const navNewsGroup = [
   {
     title: "Breaking news",
     url: "#",
-    lucideIcon: Newspaper,
+    icon: "newspaper" as const,
   },
   {
     title: "Weekly news",
     url: "#",
-    lucideIcon: Megaphone,
+    icon: "megaphone" as const,
   },
 ]
 
@@ -160,21 +148,38 @@ const supportGroup = [
   {
     title: "Settings",
     url: "#",
-    lucideIcon: Settings
+    icon: "settings" as const
   },
   {
     title: "Support",
     url: "#",
-    lucideIcon: LifeBuoy
+    icon: "lifeBuoy" as const
   },
   {
     title: "Give feedback",
     url: "#",
-    lucideIcon: Send
+    icon: "send" as const
   },
 ]
 
-export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export default async function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+  const authUser = await requireUser()
+  const user  = await db.query.user.findFirst({
+    where: (u, { eq }) => eq(u.id, authUser.id)
+  })
+
+  const navUserData = {
+    name: user?.fullName ?? (authUser.user_metadata?.full_name ?? 'User'),
+    email: user?.email ?? (authUser.email ?? ''),
+    // add profile picture here
+  }
+
+  const navCompanyData = {
+    logoSrc: '/exampleLogo.png',
+    name: 'Philips frugt',
+    plan: 'Premium plan'
+  }
   
   return (
     <Sidebar collapsible="icon" {...props}>
