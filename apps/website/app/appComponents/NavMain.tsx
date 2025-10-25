@@ -18,7 +18,6 @@ import Image from 'next/image'
 
 import {
   ChevronRight, 
-  type LucideIcon,
   LayoutDashboard,
   Newspaper,
   Megaphone,

@@ -1,15 +1,34 @@
-
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarRail,
+  SidebarHeader
 } from "@/components/ui/sidebar"
-import NavMain from '@/app/appComponents/NavMain'
 import NavHeader from "@/app/appComponents/NavHeader"
+import NavTop from '@/app/appComponents/NavTop'
+import NavMain from '@/app/appComponents/NavMain'
 import NavFooter from '@/app/appComponents/NavFooter'
 import { requireUser } from "@/lib/supabase/auth/requireUser"
 import { db } from "@repo/db"
+
+const TopGroup = [
+  {
+    title: "Home",
+    url: "/home",
+    icon: "house" as const,
+  },
+  {
+    title: "Ask AI",
+    url: "/ai",
+    icon: "brain" as const,
+  },
+  {
+    title: "Search",
+    url: "/search",
+    icon: "search" as const,
+  },
+]
 
 const DashboardGroupItems = [
   {
@@ -183,7 +202,10 @@ export default async function AppSidebar({ ...props }: React.ComponentProps<type
   
   return (
     <Sidebar collapsible="icon" {...props}>
-      <NavHeader companyData={navCompanyData}/>
+      <SidebarHeader className="flex">
+        <NavHeader companyData={navCompanyData}/>
+        <NavTop items={TopGroup} />
+      </SidebarHeader>
       <SidebarContent>
         <NavMain groupLabel="Dashboard" items={DashboardGroupItems} />
         <NavMain groupLabel="News" items={navNewsGroup} />
