@@ -11,6 +11,7 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
+  FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useState } from 'react'
@@ -51,70 +52,75 @@ export default function loginPage() {
             Fill in the form below to login to your account
           </p>
         </div>
-        <Controller
-          name="email" // name of key in formData
-          control={form.control} // connect the field to the form defined above
-          render={({ field, fieldState }) => (
-            // fieldState.invalid is true if data is invalid (used for styling and stuff)
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="email">
-                Email&#42;
-              </FieldLabel>
-              <Input
-                {...field} // spread value, onChange ect. onto the input
-                type='email'
-                id="email"
-                aria-invalid={fieldState.invalid}
-                placeholder="example@company.com"
-                autoComplete="on"
-              />
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
-              )}
-            </Field>
-          )}
-        />
-        <Controller
-          name="password" // name of key in formData
-          control={form.control} // connect the field to the form defined above
-          render={({ field, fieldState }) => (
-            // fieldState.invalid is true if data is invalid (used for styling and stuff)
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="password">
-                Password&#42;
-              </FieldLabel>
-              <Input
-                {...field} // spread value, onChange ect. onto the input
-                type='password'
-                id="password"
-                aria-invalid={fieldState.invalid}
-                placeholder=""
-                autoComplete="off"
-              />
-              {fieldState.error && 
-                <div>
-                  {fieldState.error.types && 
-                    Object.values(fieldState.error.types).map((message, index) => {
-                      if (typeof message === 'object') {
-                        const messageListElement = message.map( (messageItem, indexItem) => {
-                          return <li key={indexItem} className='text-sm text-red-600 ml-3'>{messageItem}</li>
-                        })
-                        return messageListElement
-                      } else {
-                        return <li key={index} className='text-sm text-red-600 ml-3'>{String(message)}</li>
-                      }
-                    })
-                  }
-                </div>
-              }
-            </Field>
-          )}
-        />
+        <FieldSet disabled={form.formState.isSubmitting} aria-busy={form.formState.isSubmitting}>
+          <Controller
+            name="email" // name of key in formData
+            control={form.control} // connect the field to the form defined above
+            render={({ field, fieldState }) => (
+              // fieldState.invalid is true if data is invalid (used for styling and stuff)
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="email">
+                  Email&#42;
+                </FieldLabel>
+                <Input
+                  {...field} // spread value, onChange ect. onto the input
+                  type='email'
+                  id="email"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="example@company.com"
+                  autoComplete="on"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
+                )}
+              </Field>
+            )}
+          />
+          <Controller
+            name="password" // name of key in formData
+            control={form.control} // connect the field to the form defined above
+            render={({ field, fieldState }) => (
+              // fieldState.invalid is true if data is invalid (used for styling and stuff)
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="password">
+                  Password&#42;
+                </FieldLabel>
+                <Input
+                  {...field} // spread value, onChange ect. onto the input
+                  type='password'
+                  id="password"
+                  aria-invalid={fieldState.invalid}
+                  placeholder=""
+                  autoComplete="off"
+                />
+                {fieldState.error && 
+                  <div>
+                    {fieldState.error.types && 
+                      Object.values(fieldState.error.types).map((message, index) => {
+                        if (typeof message === 'object') {
+                          const messageListElement = message.map( (messageItem, indexItem) => {
+                            return <li key={indexItem} className='text-sm text-red-600 ml-3'>{messageItem}</li>
+                          })
+                          return messageListElement
+                        } else {
+                          return <li key={index} className='text-sm text-red-600 ml-3'>{String(message)}</li>
+                        }
+                      })
+                    }
+                  </div>
+                }
+              </Field>
+            )}
+          />
+        </FieldSet>
 
         <div className='flex flex-col gap-2'>
-          <Field>
-            <Button type="submit">Login</Button>
-          </Field>
+        <Button type="submit" disabled={form.formState.isSubmitting}>
+          {form.formState.isSubmitting 
+            ? 'Loading...'
+            : 'Login'
+          }
+        </Button>
           {
             error && <p className='text-red-600 text-sm'>{error}</p>
           }

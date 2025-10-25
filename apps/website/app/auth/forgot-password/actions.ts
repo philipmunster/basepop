@@ -20,8 +20,6 @@ export async function forgotPassword(data: emailType) {
     redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/update-password`, // the email link redirects to the update password page
   })
 
-  console.log(error)
-
   if (error) {
     throw error
   }

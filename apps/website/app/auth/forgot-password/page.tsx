@@ -10,6 +10,7 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
+  FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useState } from 'react'
@@ -53,33 +54,40 @@ export default function ForgotPasswordPage() {
               Type in your email and we&apos;ll send you a link to reset your password
             </p>
           </div>
-          <Controller
-            name="email" // name of key in formData
-            control={form.control} // connect the field to the form defined above
-            render={({ field, fieldState }) => (
-              // fieldState.invalid is true if data is invalid (used for styling and stuff)
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="email">
-                  Email
-                </FieldLabel>
-                <Input
-                  {...field} // spread value, onChange ect. onto the input
-                  type='email'
-                  id="email"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="example@company.com"
-                  autoComplete="on"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
-                )}
-              </Field>
-            )}
-          />
+          <FieldSet disabled={form.formState.isSubmitting} aria-busy={form.formState.isSubmitting}>            
+            <Controller
+              name="email" // name of key in formData
+              control={form.control} // connect the field to the form defined above
+              render={({ field, fieldState }) => (
+                // fieldState.invalid is true if data is invalid (used for styling and stuff)
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="email">
+                    Email
+                  </FieldLabel>
+                  <Input
+                    {...field} // spread value, onChange ect. onto the input
+                    type='email'
+                    id="email"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="example@company.com"
+                    autoComplete="on"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
+                  )}
+                </Field>
+              )}
+            />
+          </FieldSet>
   
           <div className='flex flex-col gap-2'>
             <Field>
-              <Button type="submit">Reset password</Button>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting 
+                  ? 'Loading...'
+                  : 'Reset password'
+                }
+              </Button>
             </Field>
             {
               error && <p className='text-red-600 text-sm text-center'>{error}</p>

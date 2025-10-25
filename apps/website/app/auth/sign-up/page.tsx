@@ -11,6 +11,7 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
+  FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useState } from 'react'
@@ -56,22 +57,92 @@ export default function SignUpPage() {
                 Fill in the form below to create your account
               </p>
             </div>
-
-            <div className='flex gap-2'>
+            
+            <FieldSet disabled={form.formState.isSubmitting} aria-busy={form.formState.isSubmitting}>
+              <div className='flex gap-2'>
+                <Controller
+                  name="firstName" // name of key in formData
+                  control={form.control} // connect the field to the form defined above
+                  render={({ field, fieldState }) => (
+                    // fieldState.invalid is true if data is invalid (used for styling and stuff)
+                    <Field data-invalid={fieldState.invalid} className='w-2/5'>
+                      <FieldLabel htmlFor="first-name">
+                        First name&#42;
+                      </FieldLabel>
+                      <Input
+                        {...field} // spread value, onChange ect. onto the input
+                        id="first-name"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Michael"
+                        autoComplete="on"
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
+                      )}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="lastName" // name of key in formData
+                  control={form.control} // connect the field to the form defined above
+                  render={({ field, fieldState }) => (
+                    // fieldState.invalid is true if data is invalid (used for styling and stuff)
+                    <Field data-invalid={fieldState.invalid} className='w-3/5'>
+                      <FieldLabel htmlFor="last-name">
+                        Last name&#42;
+                      </FieldLabel>
+                      <Input
+                        {...field} // spread value, onChange ect. onto the input
+                        id="last-name"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Scott"
+                        autoComplete="on"
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
+                      )}
+                    </Field>
+                  )}
+                />
+              </div>
               <Controller
-                name="firstName" // name of key in formData
+                name="orgName" // name of key in formData
                 control={form.control} // connect the field to the form defined above
                 render={({ field, fieldState }) => (
                   // fieldState.invalid is true if data is invalid (used for styling and stuff)
-                  <Field data-invalid={fieldState.invalid} className='w-2/5'>
-                    <FieldLabel htmlFor="first-name">
-                      First name&#42;
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="org-name">
+                      Organisation name&#42;
                     </FieldLabel>
                     <Input
                       {...field} // spread value, onChange ect. onto the input
-                      id="first-name"
+                      id="org-name"
                       aria-invalid={fieldState.invalid}
-                      placeholder="Michael"
+                      placeholder="Dunder Mifflin"
+                      autoComplete="on"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
+                    )}
+                    <FieldDescription className='text-xs'>This can always be changed later</FieldDescription>
+                  </Field>
+                )}
+              />
+              <Controller
+                name="email" // name of key in formData
+                control={form.control} // connect the field to the form defined above
+                render={({ field, fieldState }) => (
+                  // fieldState.invalid is true if data is invalid (used for styling and stuff)
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="email">
+                      Email&#42;
+                    </FieldLabel>
+                    <Input
+                      {...field} // spread value, onChange ect. onto the input
+                      type='email'
+                      id="email"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="mscott@dundermifflin.com"
                       autoComplete="on"
                     />
                     {fieldState.invalid && (
@@ -81,20 +152,57 @@ export default function SignUpPage() {
                 )}
               />
               <Controller
-                name="lastName" // name of key in formData
+                name="password" // name of key in formData
                 control={form.control} // connect the field to the form defined above
                 render={({ field, fieldState }) => (
                   // fieldState.invalid is true if data is invalid (used for styling and stuff)
-                  <Field data-invalid={fieldState.invalid} className='w-3/5'>
-                    <FieldLabel htmlFor="last-name">
-                      Last name&#42;
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="password">
+                      Password&#42;
                     </FieldLabel>
                     <Input
                       {...field} // spread value, onChange ect. onto the input
-                      id="last-name"
+                      type='password'
+                      id="password"
                       aria-invalid={fieldState.invalid}
-                      placeholder="Scott"
-                      autoComplete="on"
+                      placeholder=""
+                      autoComplete="off"
+                    />
+                    {fieldState.error && 
+                      <div>
+                        {fieldState.error.types && 
+                          Object.values(fieldState.error.types).map((message, index) => {
+                            if (typeof message === 'object') {
+                              const messageListElement = message.map( (messageItem, indexItem) => {
+                                return <li key={indexItem} className='text-sm text-red-600 ml-3'>{messageItem}</li>
+                              })
+                              return messageListElement
+                            } else {
+                              return <li key={index} className='text-sm text-red-600 ml-3'>{String(message)}</li>
+                            }
+                          })
+                        }
+                      </div>
+                    }
+                  </Field>
+                )}
+              />
+              <Controller
+                name="confirmPassword" // name of key in formData
+                control={form.control} // connect the field to the form defined above
+                render={({ field, fieldState }) => (
+                  // fieldState.invalid is true if data is invalid (used for styling and stuff)
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="confirmPassword">
+                      Confirm password&#42;
+                    </FieldLabel>
+                    <Input
+                      {...field} // spread value, onChange ect. onto the input
+                      type='password'
+                      id="confirmPassword"
+                      aria-invalid={fieldState.invalid}
+                      placeholder=""
+                      autoComplete="off"
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
@@ -102,117 +210,15 @@ export default function SignUpPage() {
                   </Field>
                 )}
               />
-            </div>
-            <Controller
-              name="orgName" // name of key in formData
-              control={form.control} // connect the field to the form defined above
-              render={({ field, fieldState }) => (
-                // fieldState.invalid is true if data is invalid (used for styling and stuff)
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="org-name">
-                    Organisation name&#42;
-                  </FieldLabel>
-                  <Input
-                    {...field} // spread value, onChange ect. onto the input
-                    id="org-name"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Dunder Mifflin"
-                    autoComplete="on"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
-                  )}
-                  <FieldDescription className='text-xs'>This can always be changed later</FieldDescription>
-                </Field>
-              )}
-            />
-            <Controller
-              name="email" // name of key in formData
-              control={form.control} // connect the field to the form defined above
-              render={({ field, fieldState }) => (
-                // fieldState.invalid is true if data is invalid (used for styling and stuff)
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="email">
-                    Email&#42;
-                  </FieldLabel>
-                  <Input
-                    {...field} // spread value, onChange ect. onto the input
-                    type='email'
-                    id="email"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="mscott@dundermifflin.com"
-                    autoComplete="on"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
-                  )}
-                </Field>
-              )}
-            />
-            <Controller
-              name="password" // name of key in formData
-              control={form.control} // connect the field to the form defined above
-              render={({ field, fieldState }) => (
-                // fieldState.invalid is true if data is invalid (used for styling and stuff)
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="password">
-                    Password&#42;
-                  </FieldLabel>
-                  <Input
-                    {...field} // spread value, onChange ect. onto the input
-                    type='password'
-                    id="password"
-                    aria-invalid={fieldState.invalid}
-                    placeholder=""
-                    autoComplete="off"
-                  />
-                  {fieldState.error && 
-                    <div>
-                      {fieldState.error.types && 
-                        Object.values(fieldState.error.types).map((message, index) => {
-                          if (typeof message === 'object') {
-                            const messageListElement = message.map( (messageItem, indexItem) => {
-                              return <li key={indexItem} className='text-sm text-red-600 ml-3'>{messageItem}</li>
-                            })
-                            return messageListElement
-                          } else {
-                            return <li key={index} className='text-sm text-red-600 ml-3'>{String(message)}</li>
-                          }
-                        })
-                      }
-                    </div>
-                  }
-                </Field>
-              )}
-            />
-            <Controller
-              name="confirmPassword" // name of key in formData
-              control={form.control} // connect the field to the form defined above
-              render={({ field, fieldState }) => (
-                // fieldState.invalid is true if data is invalid (used for styling and stuff)
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="confirmPassword">
-                    Confirm password&#42;
-                  </FieldLabel>
-                  <Input
-                    {...field} // spread value, onChange ect. onto the input
-                    type='password'
-                    id="confirmPassword"
-                    aria-invalid={fieldState.invalid}
-                    placeholder=""
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
-                  )}
-                </Field>
-              )}
-            />
+            </FieldSet>
 
             <div className='flex flex-col gap-2'>
-              <Field>
-                <Button type="submit">Create Account</Button>
-              </Field>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting 
+                  ? 'Loading...'
+                  : 'Create account'
+                }
+              </Button>
               {
                 error && <p className='text-red-600 text-sm'>{error}</p>
               }
