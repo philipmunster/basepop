@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   return updateSession(request)
 }
 
-// remeber to also update /lib/supabase/middleware.ts list
+// remember to also update /lib/supabase/middleware.ts list
 export const config = {
   matcher: [
     '/dashboard/:path*',
@@ -14,7 +14,7 @@ export const config = {
     '/dashboard/:path*', 
     '/news/:path*', 
     '/settings/:path*', 
-    '/welcome/:path*',
+    '/home/:path*',
     '/login',
   ],
 }

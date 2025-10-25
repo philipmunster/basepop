@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 // Add (or adjust) protected route prefixes here.
 // remember to also update middleware.ts list in root
-const PROTECTED_PREFIXES = ['/changelog', '/dashboard', '/news', '/settings', '/welcome']
+const PROTECTED_PREFIXES = ['/changelog', '/dashboard', '/news', '/settings', '/home']
 
 function isProtectedPath(pathname: string) {
   return PROTECTED_PREFIXES.some(p => pathname === p || pathname.startsWith(p + '/'))
@@ -42,7 +42,7 @@ export async function updateSession(request: NextRequest) {
   // If user is logged in and hitting /login, send them to a default app page.
   if (user && pathname === '/login') {
     const url = request.nextUrl.clone()
-    url.pathname = '/welcome'
+    url.pathname = '/home'
     const redirect = NextResponse.redirect(url)
     // preserve cookies from supabaseResponse
     supabaseResponse.cookies.getAll().forEach(c =>

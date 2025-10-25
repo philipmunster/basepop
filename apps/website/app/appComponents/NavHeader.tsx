@@ -23,7 +23,7 @@ export default function NavHeader({ companyData }: NavHeaderProps) {
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton size="lg" asChild>
-          <Link href="/welcome">
+          <Link href="/home">
             <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
               <Avatar className="rounded-md">
                 <AvatarImage src={companyData?.logoSrc}/>

@@ -39,7 +39,7 @@ export async function signup(data: signUpType) {
   const cookieStore = await cookies()
   cookieStore.set('pending_orgName', parsedData.orgName, { maxAge: 60 * 60 * 2})  
 
-  // clear any cached version of /welcome so the next user gets a fresh render with updated session state (e.g., logged-in user info).
-  revalidatePath('/welcome/', 'layout')
+  // clear any cached version of /home so the next user gets a fresh render with updated session state (e.g., logged-in user info).
+  revalidatePath('/home/', 'layout')
   redirect('/auth/sign-up-success/')
 }

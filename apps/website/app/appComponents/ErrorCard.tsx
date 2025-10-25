@@ -33,7 +33,7 @@ export default function ErrorCard({ children }:
           <div className="flex gap-2">
             {/* <LogoutButton /> */}
             <Button onClick={() => router.back()}>Try again <RotateCcwIcon /></Button>
-            <Button variant="outline"><Link href='/welcome'>Go to start page</Link></Button>
+            <Button variant="outline"><Link href='/home'>Go to home page</Link></Button>
           </div>
         </EmptyContent>
         <EmptyDescription>

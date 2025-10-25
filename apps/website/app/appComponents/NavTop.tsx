@@ -6,6 +6,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import Link from 'next/link'
 
 type IconName =
   | "house"
@@ -35,10 +36,10 @@ export default function NavMain({
         return (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton asChild isActive={item.isActive}>
-              <a href={item.url}>
+              <Link href={item.url}>
                 {Icon && <Icon />}
                 <span>{item.title}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         )

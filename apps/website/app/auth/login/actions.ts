@@ -28,7 +28,7 @@ export async function login(data: loginType) {
   if (error) {
     throw error
   }
-  // clear any cached version of /welcome so the next user gets a fresh render with updated session state (e.g., logged-in user info).
-  revalidatePath('/welcome/', 'layout')
-  redirect('/welcome/')
+  // clear any cached version of /home so the next user gets a fresh render with updated session state (e.g., logged-in user info).
+  revalidatePath('/home/', 'layout')
+  redirect('/home/')
 }
