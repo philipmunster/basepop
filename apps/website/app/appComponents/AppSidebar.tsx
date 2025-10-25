@@ -11,6 +11,25 @@ import NavMain from '@/app/appComponents/NavMain'
 import NavFooter from '@/app/appComponents/NavFooter'
 import { requireUser } from "@/lib/supabase/auth/requireUser"
 import { db } from "@repo/db"
+import { TeamSwitcher } from "@/app/appComponents/TeamSwitcher"
+
+const OrganisationMemberships = [
+  {
+    name: "Acme Inc",
+    logo: undefined,
+    plan: "Enterprise",
+  },
+  {
+    name: "Acme Corp.",
+    logo: undefined,
+    plan: "Startup",
+  },
+  {
+    name: "Evil Corp.",
+    logo: undefined,
+    plan: "Free",
+  },
+]
 
 const TopGroup = [
   {
@@ -203,7 +222,7 @@ export default async function AppSidebar({ ...props }: React.ComponentProps<type
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="flex">
-        <NavHeader companyData={navCompanyData}/>
+        <TeamSwitcher teams={OrganisationMemberships}/>
         <NavTop items={TopGroup} />
       </SidebarHeader>
       <SidebarContent>
