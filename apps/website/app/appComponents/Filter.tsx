@@ -101,7 +101,7 @@ function FilterSelectMultiple({label, options}: {label: string, options: string[
   function handleCheckedChange(value: string) {
     setSelectedValues(selectedValues => {
       if (selectedValues.includes(value)) {
-        return selectedValues.filter(selectedValue => selectedValue != value)
+        return selectedValues.filter(selectedValue => selectedValue !== value)
       } else {
         return [...selectedValues, value] 
       }

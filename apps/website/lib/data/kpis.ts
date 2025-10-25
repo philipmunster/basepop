@@ -1,6 +1,8 @@
 import { unstable_cache } from 'next/cache'
 import { db, shopifyOrderFact } from '@repo/db'
 import { and, eq, gte, lt, sql } from 'drizzle-orm'
+import { reqKpisSchema } from '@repo/zod/reqKpis'
+import { ValidationError, DataFetchError } from '@/lib/errors/classes'
 
 async function rawGetKpis({ 
   orgId,
@@ -32,8 +34,15 @@ async function rawGetKpis({
       .orderBy(sql`1`)
     return rows
   } catch(e) {
-    console.error(`rawGetKpis failed. OrgId: ${orgId}, Error: ${e}`)
-    throw new Error('Error with fetching data')
+    // e.message is the string, e.cause is Drizzle error and e.meta is the filters used
+    throw new DataFetchError('Error fetching KPI data', {
+      cause: e,
+      meta: {
+        orgId,
+        dateFrom: dateRange.from.toISOString(),
+        dateTo: dateRange.to.toISOString(),
+      },
+    })
   }
 }
 
@@ -47,6 +56,15 @@ export async function getKpisCached({
     to: Date
   }
 }) {
+
+  // validate the filter data using zod
+  const parsed = reqKpisSchema.safeParse({ 
+    orgId,
+    dateRange
+  })
+  if (!parsed.success) {
+    throw new ValidationError('Invalid data filters', parsed.error.format())
+  }
 
   const keyParts = [
     'kpis',

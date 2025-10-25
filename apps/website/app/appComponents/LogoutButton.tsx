@@ -16,7 +16,7 @@ function LogoutMenuItem() {
       onClick={() =>
         start(async () => {
           await fetch('/auth/signout', { method: 'POST' })
-          router.replace('/login') // the route already redirects, this keeps the UI snappy
+          router.replace('/auth/login') // the route already redirects, this keeps the UI snappy
         })
       }
       disabled={pending}
@@ -37,7 +37,7 @@ function LogoutButton({ ...props }: { props?: Readonly<React.ReactNode>}) {
       onClick={() =>
         start(async () => {
           await fetch('/auth/signout', { method: 'POST' })
-          router.replace('/login') // the route already redirects, this keeps the UI snappy
+          router.replace('/auth/login') // the route already redirects, this keeps the UI snappy
         })
       }
       disabled={pending}

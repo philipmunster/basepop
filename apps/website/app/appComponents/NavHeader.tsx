@@ -4,12 +4,12 @@ import {
   SidebarMenuItem,
   SidebarMenuButton
 } from "@/components/ui/sidebar"
-
 import { 
   Avatar, 
   AvatarFallback, 
   AvatarImage 
 } from "@/components/ui/avatar"
+import Link from 'next/link'
 
 type NavHeaderProps = {
   companyData: {
@@ -25,7 +25,7 @@ export default function NavHeader({ companyData }: NavHeaderProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link href="/welcome">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <Avatar className="rounded-md">
                     <AvatarImage src={companyData?.logoSrc}/>
@@ -40,7 +40,7 @@ export default function NavHeader({ companyData }: NavHeaderProps) {
                   <span className="truncate font-medium">{companyData.name}</span>
                   <span className="truncate text-xs">{companyData.plan}</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

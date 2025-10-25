@@ -1,5 +1,4 @@
 "use client"
-import { ChevronRight, type LucideIcon } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -17,12 +16,41 @@ import {
 } from "@/components/ui/sidebar"
 import Image from 'next/image'
 
+import {
+  ChevronRight, 
+  type LucideIcon,
+  LayoutDashboard,
+  Newspaper,
+  Megaphone,
+  LifeBuoy,
+  Settings,
+  Send,
+} from "lucide-react"
+import Link from 'next/link'
+
+type IconName =
+  | "layoutDashboard"
+  | "newspaper"
+  | "megaphone"
+  | "lifeBuoy"
+  | "settings"
+  | "send"
+
+const iconMap: Record<IconName, React.ComponentType<{ className?: string }>> = {
+  layoutDashboard: LayoutDashboard,
+  newspaper: Newspaper,
+  megaphone: Megaphone,
+  lifeBuoy: LifeBuoy,
+  settings: Settings,
+  send: Send,
+}
+
 export default function NavMain({ groupLabel, items, atBottom = false }: {
   groupLabel?: string
   items: {
     title: string
     url: string
-    lucideIcon?: LucideIcon
+    icon?: IconName
     imageIcon?: {
       src: string
       alt: string
@@ -38,11 +66,12 @@ export default function NavMain({ groupLabel, items, atBottom = false }: {
   atBottom?: boolean 
 }) {
   return (
-
     <SidebarGroup className={atBottom ? 'mt-auto' : ""}>
       <SidebarGroupLabel>{groupLabel && groupLabel}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
+          const Icon = item.icon ? iconMap[item.icon] : undefined
+
           if (item?.items) {
             return (
               <Collapsible
@@ -54,8 +83,16 @@ export default function NavMain({ groupLabel, items, atBottom = false }: {
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton tooltip={item.title} className={atBottom ? 'size-sm' : ""}>
-                      {item.lucideIcon && <item.lucideIcon />}
-                      {item.imageIcon && <Image src={item.imageIcon.src} alt={item.imageIcon.alt} width={item.imageIcon.width} height={item.imageIcon.height} className="size-4"/>}
+                      {Icon && <Icon />}
+                      {item.imageIcon && (
+                        <Image
+                          src={item.imageIcon.src}
+                          alt={item.imageIcon.alt}
+                          width={item.imageIcon.width}
+                          height={item.imageIcon.height}
+                          className="size-4"
+                        />
+                      )}
                       <span>{item.title}</span>
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
@@ -65,9 +102,9 @@ export default function NavMain({ groupLabel, items, atBottom = false }: {
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>    
-                            <a href={subItem.url}>
+                            <Link href={subItem.url}>
                               <span>{subItem.title}</span>
-                            </a>
+                            </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}
@@ -78,15 +115,23 @@ export default function NavMain({ groupLabel, items, atBottom = false }: {
             )
           } else {
             return (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton tooltip={item.title} asChild size={atBottom ? "sm": null}>
-                    <a href={item.url}>
-                      {item.lucideIcon && <item.lucideIcon />}
-                      {item.imageIcon && <Image src={item.imageIcon.src} alt={item.imageIcon.alt} width={item.imageIcon.width} height={item.imageIcon.height} className="size-4"/>}
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton tooltip={item.title} asChild size={atBottom ? "sm": null}>
+                  <Link href={item.url}>
+                    {Icon && <Icon />}
+                    {item.imageIcon && (
+                      <Image
+                        src={item.imageIcon.src}
+                        alt={item.imageIcon.alt}
+                        width={item.imageIcon.width}
+                        height={item.imageIcon.height}
+                        className="size-4"
+                      />
+                    )}
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             )
           }
         })}

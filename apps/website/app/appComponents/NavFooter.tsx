@@ -34,7 +34,7 @@ export default function NavFooter({ user }: {
   user: {
     name: string
     email: string
-    avatar: string
+    avatar?: string
   }
 }) {
   

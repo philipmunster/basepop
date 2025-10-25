@@ -3,9 +3,9 @@ import { Separator } from "@/components/ui/separator"
 import DashboardTitle from "@/app/appComponents/DashboardTitle"
 import CurrencySelector from "@/app/appComponents/CurrencySelector"
 import DatePicker from "@/app/appComponents/DatePicker"
-import { requireUser } from '@/lib/supabase/requireUser'
-import { resolveOrgId } from '@/lib/supabase/resolveOrgId'
-import { getDateRange } from '@/lib/data/getDateRange'
+import { requireUser } from '@/lib/supabase/auth/requireUser'
+import { resolveOrgId } from '@/lib/supabase/auth/resolveOrgId'
+import { getDateRange } from '@/lib/utils/getDateRange'
 
 
 export default async function LayoutDashboard({ children }: Readonly<{children: React.ReactNode}>) {
@@ -13,10 +13,7 @@ export default async function LayoutDashboard({ children }: Readonly<{children: 
   const orgId = await resolveOrgId(user.id) // throws error on failure
 
   const defaultPreset = await getDateRange(orgId, user.id)
-
-  // using cache? how to see and turn off for dev??
-  // console.log(defaultPreset)
-
+  
   return (
     <div>
       <div className="flex items-center gap-5 h-8">

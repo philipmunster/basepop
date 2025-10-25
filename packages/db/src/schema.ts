@@ -9,17 +9,37 @@ export const datePreset = pgEnum('date_preset', datePresetsArray)
 export const org = pgTable('org', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
+  createdBy: uuid('createdBy').references(() => user.id, { onDelete: 'set null' }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+})
+
+export const user = pgTable('user', {
+  id: uuid('id').primaryKey(),
+  fullName: text('full_name').notNull(),
+  email: text('email').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 })
 
 export const orgMember = pgTable('org_member', {
   orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
-  userId: uuid('user_id').notNull(), // Supabase auth.users.id
-  role: memberRole('role').notNull().default('owner'),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  role: memberRole('role').notNull().default('admin'),
   joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow(),
-}, (t) => ({
-  pk: primaryKey({ columns: [t.orgId, t.userId] }),
-}))
+}, (t) => ([
+  primaryKey({ columns: [t.orgId, t.userId] }),
+]))
+
+export const orgSettings = pgTable('org_settings', {
+  orgId: uuid('org_id').primaryKey().notNull().references(() => org.id, { onDelete: 'cascade' }),
+  billingEmail: text('billing_email').notNull(),
+})
+
+export const userSettings = pgTable('user_settings', {
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade'}),
+  datePreset: datePreset('date_preset').notNull().default('Last 30 days'),
+  timeZone: text('timezone').notNull().default('Europe/Copenhagen'),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+})
 
 export const shopifyOrderFact = pgTable('shopify_order_fact', {
   orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
@@ -28,27 +48,7 @@ export const shopifyOrderFact = pgTable('shopify_order_fact', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
   currency: text('currency').notNull(),
   totalPrice: numeric('total_price', { precision: 12, scale: 2 }).notNull(),
-}, (t) => ({
-  pk: primaryKey({ columns: [t.orgId, t.orderId] }),
-  idxShopifyOrderOrgCreated: index('idx_shopify_order_org_created').on(t.orgId, t.createdAt),
-}))
-
-export const orgSettings = pgTable('org_settings', {
-  orgId: uuid('org_id').primaryKey().notNull().references(() => org.id, { onDelete: 'cascade' }),
-  billingEmail: text('billing_email').notNull(),
-})
-
-export const orgMemberSettings = pgTable('org_member_settings', {
-  orgId: uuid('org_id').notNull(),
-  userId: uuid('user_id').notNull(),
-  datePreset: datePreset('date_preset').notNull().default('Last 30 days'),
-  timeZone: text('timezone').notNull().default('Europe/Copenhagen'),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
-}, (t) => ({
-  pk: primaryKey({ columns: [t.orgId, t.userId] }),
-  orgMemberFk: foreignKey({
-    columns: [t.orgId, t.userId],
-    foreignColumns: [orgMember.orgId, orgMember.userId],
-    name: 'org_member_settings_org_member_fk',
-  }).onDelete('cascade'),
-}))
+}, (t) => ([
+  primaryKey({ columns: [t.orgId, t.orderId] }),
+  index('idx_shopify_order_org_created').on(t.orgId, t.createdAt),
+]))
