@@ -11,7 +11,7 @@ import NavMain from '@/app/appComponents/NavMain'
 import NavFooter from '@/app/appComponents/NavFooter'
 import { requireUser } from "@/lib/supabase/auth/requireUser"
 import { db } from "@repo/db"
-import { TeamSwitcher } from "@/app/appComponents/TeamSwitcher"
+import { OrgSwitcher } from "@/app/appComponents/OrgSwitcher"
 
 const OrganisationMemberships = [
   {
@@ -212,17 +212,11 @@ export default async function AppSidebar({ ...props }: React.ComponentProps<type
     email: user?.email ?? (authUser.email ?? ''),
     // add profile picture here
   }
-
-  const navCompanyData = {
-    logoSrc: '/exampleLogo.png',
-    name: 'Philips frugt',
-    plan: 'Premium plan'
-  }
   
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="flex">
-        <TeamSwitcher teams={OrganisationMemberships}/>
+        <OrgSwitcher teams={OrganisationMemberships}/>
         <NavTop items={TopGroup} />
       </SidebarHeader>
       <SidebarContent>

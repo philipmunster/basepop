@@ -23,7 +23,7 @@ import {
   AvatarImage 
 } from "@/components/ui/avatar"
 
-export function TeamSwitcher({
+export function OrgSwitcher({
   teams,
 }: {
   teams: {
@@ -68,7 +68,7 @@ export function TeamSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              Organisation
             </DropdownMenuLabel>
             {teams.map((team, index) => (
               <DropdownMenuItem
