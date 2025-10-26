@@ -5,16 +5,10 @@ export async function middleware(request: NextRequest) {
   return updateSession(request)
 }
 
-// remember to also update /lib/supabase/middleware.ts list
+// remember to also update /lib/supabase/auth/middleware.ts list
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/settings/:path*',
-    '/changelog/:path*', 
-    '/dashboard/:path*', 
-    '/news/:path*', 
-    '/settings/:path*', 
-    '/home/:path*',
-    '/login',
+    '/platform/:path*',
+    '/auth/login'
   ],
 }
