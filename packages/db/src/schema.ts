@@ -1,5 +1,5 @@
 import {
-  pgTable, uuid, text, timestamp, numeric, primaryKey, pgEnum, index, foreignKey
+  pgTable, uuid, text, timestamp, numeric, primaryKey, pgEnum, index, foreignKey, unique, boolean, smallint
 } from 'drizzle-orm/pg-core'
 import { datePresetsArray } from './datePresets'
 
@@ -21,12 +21,42 @@ export const user = pgTable('user', {
 })
 
 export const orgMember = pgTable('org_member', {
+  id: uuid('id').defaultRandom().primaryKey(),
   orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
   userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
-  role: memberRole('role').notNull().default('admin'),
+  roleId: uuid('role_id').references(() => orgRole.id, { onDelete: 'set null' }),
   joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow(),
 }, (t) => ([
-  primaryKey({ columns: [t.orgId, t.userId] }),
+  unique().on(t.orgId, t.userId)
+]))
+
+export const dataSource = pgTable('data_source', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull().unique()
+})
+
+export const orgDataSourceStatus = pgTable('org_data_source_status', {
+  orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
+  dataSourceId: uuid('data_source_id').notNull().references(() => dataSource.id, { onDelete: 'cascade' }),
+  connected: boolean('connected').notNull()
+}, (t) => ([
+  primaryKey({ columns: [t.orgId, t.dataSourceId]})
+]))
+
+export const orgRole = pgTable('org_role', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
+  name: text('name').notNull()
+}, (t) => ([
+  unique().on(t.orgId, t.name)
+]))
+
+export const orgRolePermission = pgTable('org_role_permissions', {
+  orgRoleId: uuid('org_role_id').notNull().references(() => orgRole.id, { onDelete: 'cascade'}),
+  dataSourceId: uuid('data_source_id').notNull().references(() => dataSource.id, { onDelete: 'cascade'}),
+  canView: boolean('can_view').notNull()
+}, (t) => ([
+  primaryKey({ columns: [t.orgRoleId, t.dataSourceId]})
 ]))
 
 export const orgSettings = pgTable('org_settings', {
