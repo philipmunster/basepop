@@ -35,9 +35,9 @@ export async function signup(data: signUpType) {
     throw error
   }
 
-  // if no errors in signup then set the orgName in cookies
+  // if no errors in signup then set the describeYou in cookies
   const cookieStore = await cookies()
-  cookieStore.set('pending_orgName', parsedData.orgName, { maxAge: 60 * 60 * 2})  
+  cookieStore.set('describe_you', parsedData.describeYou, { maxAge: 60 * 60 * 2})  
 
   // clear any cached version of /home so the next user gets a fresh render with updated session state (e.g., logged-in user info).
   revalidatePath('/home/', 'layout')

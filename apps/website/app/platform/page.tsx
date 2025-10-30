@@ -8,6 +8,6 @@ export default async function RedirectToActiveOrgParam() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
   
-  
+  // if there user is not a member of any org then send the user to the /platform/onboarding page
 
 }
