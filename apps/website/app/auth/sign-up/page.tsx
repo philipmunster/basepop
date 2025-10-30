@@ -7,17 +7,33 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from "@/components/ui/button"
 import {
   Field,
+  FieldContent,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { useState } from 'react'
 import Link from 'next/link'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
 
+const describeYouOptions = [
+  { label: "I run a company", value: "runs_company" },
+  { label: "I'm a company employee", value: "employee" },
+  { label: "I work for an agency", value: "agency" },
+  { label: "I'm a freelancer", value: "freelancer" },
+  { label: "I'm an investor", value: "investor" },
+  { label: "I'm just exploring Basepop", value: "exploring" },
+] as const
 
 export default function SignUpPage() {
   const [error, setError] = useState<string | undefined>(undefined)
@@ -28,10 +44,10 @@ export default function SignUpPage() {
     defaultValues: {
       firstName: "",
       lastName: "",
+      describeYou: undefined,
       email: "",
       password: "",
       confirmPassword: "",
-      orgName: "",
     }
   })
 
@@ -106,25 +122,42 @@ export default function SignUpPage() {
                 />
               </div>
               <Controller
-                name="orgName" // name of key in formData
-                control={form.control} // connect the field to the form defined above
+                name="describeYou"
+                control={form.control}
                 render={({ field, fieldState }) => (
-                  // fieldState.invalid is true if data is invalid (used for styling and stuff)
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="org-name">
-                      Organisation name&#42;
-                    </FieldLabel>
-                    <Input
-                      {...field} // spread value, onChange ect. onto the input
-                      id="org-name"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Dunder Mifflin"
-                      autoComplete="on"
-                    />
+                  <Field
+                    orientation="responsive"
+                    data-invalid={fieldState.invalid}
+                  >
+                    <FieldContent>
+                      <FieldLabel htmlFor="describeYou">
+                        What best describes you?&#42;
+                      </FieldLabel>
+                      
+                    </FieldContent>
+                    <Select
+                      name={field.name}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <SelectTrigger
+                        id="describeYou"
+                        aria-invalid={fieldState.invalid}
+                        className="min-w-[120px]"
+                      >
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent position="item-aligned">
+                        {describeYouOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} /> // if zod validation fails, display the zod error message defined in schema
-                    )}
-                    <FieldDescription className='text-xs'>This can always be changed later</FieldDescription>
+                        <FieldError errors={[fieldState.error]} />
+                      )}
                   </Field>
                 )}
               />

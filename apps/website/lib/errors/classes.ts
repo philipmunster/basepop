@@ -33,3 +33,16 @@ export class DataFetchError extends Error {
     this.meta = options?.meta;
   }
 }
+
+export class DataInsertError extends Error {
+  meta?: Record<string, unknown>;
+
+  constructor(
+    message = 'Failed to insert data',
+    options?: { cause?: unknown; meta?: Record<string, unknown> }
+  ) {
+    super(message, options);
+    this.name = 'DataInsertError';
+    this.meta = options?.meta;
+  }
+}

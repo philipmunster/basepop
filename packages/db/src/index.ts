@@ -9,6 +9,7 @@ import * as schema from './schema'
 export * from './datePresets'
 export * from './describeYouOptions'
 export * from './describeCompanyOptions'
+export * from './dataSourceIds'
 
 config({ path: '.env' }); // or .env.local
 

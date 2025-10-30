@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createNewUser } from '@/lib/data/createNewUser'
+import { describeYouOptionsType } from '@repo/db'
 
 // the confirmation email has a confirm link
 // the link sends users to this api endpoint(/auth/confirm)
@@ -34,11 +35,10 @@ export async function GET(request: NextRequest) {
 
     // get orgName from cookie
     const cookieStore = await cookies()
-    const orgName = cookieStore.get('pending_orgName')?.value ?? 'My organisation'
+    const describeYou = cookieStore.get('describe_you')?.value as describeYouOptionsType | undefined
 
-    console.log(user)
     // fill the DB for the new user i.e. user row, org row, org member row, user settings row and org settings row
-    await createNewUser(user.id, user.user_metadata.full_name, user.user_metadata.email, orgName)
+    await createNewUser(user.id, user.user_metadata.full_name, user.user_metadata.email, describeYou)
 
     cookieStore.delete('pending_org')
 
