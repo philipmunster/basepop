@@ -1,0 +1,1 @@
+ALTER TABLE "org_role_permissions" ALTER COLUMN "can_view" SET DEFAULT false;
