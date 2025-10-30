@@ -1,0 +1,1 @@
+ALTER TABLE "org_settings" ALTER COLUMN "billing_email" DROP NOT NULL;

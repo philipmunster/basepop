@@ -7,6 +7,8 @@ import postgres from 'postgres';
 import * as schema from './schema'
 
 export * from './datePresets'
+export * from './describeYouOptions'
+export * from './describeCompanyOptions'
 
 config({ path: '.env' }); // or .env.local
 

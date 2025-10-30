@@ -43,6 +43,41 @@
       "when": 1761491320823,
       "tag": "0005_sticky_silvermane",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1761581152241,
+      "tag": "0006_colorful_invaders",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1761685705430,
+      "tag": "0007_workable_alice",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1761687729104,
+      "tag": "0008_flat_chameleon",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1761690691924,
+      "tag": "0009_gifted_landau",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1761851884974,
+      "tag": "0010_little_maverick",
+      "breakpoints": true
     }
   ]
 }
