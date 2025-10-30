@@ -58,7 +58,7 @@ export const orgRole = pgTable('org_role', {
 ]))
 
 export const orgRolePermissions = pgTable('org_role_permissions', {
-  RoleId: uuid('org_role_id').notNull().references(() => orgRole.id, { onDelete: 'cascade'}),
+  RoleId: uuid('role_id').notNull().references(() => orgRole.id, { onDelete: 'cascade'}),
   dataSourceId: uuid('data_source_id').notNull().references(() => dataSource.id, { onDelete: 'cascade'}),
   orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
   canView: boolean('can_view').notNull().default(false)
