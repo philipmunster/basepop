@@ -44,7 +44,7 @@ export const dataSource = pgTable('data_source', {
 export const orgDataSourceStatus = pgTable('org_data_source_status', {
   orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
   dataSourceId: uuid('data_source_id').notNull().references(() => dataSource.id, { onDelete: 'cascade' }),
-  connected: boolean('connected').notNull()
+  connected: boolean('connected').notNull().default(false)
 }, (t) => ([
   primaryKey({ columns: [t.orgId, t.dataSourceId]})
 ]))
