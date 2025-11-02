@@ -152,7 +152,7 @@ export default function UpdatePasswordPage() {
         <p className="text-muted-foreground text-sm text-balance">
           You can now continue using Basepop, and the next time you have to login you can use your new password.
         </p>
-        <Link href='/home'>
+        <Link href='/platform'>
           <Button className='mt-8'>
             Go to Basepop<ArrowRight />
           </Button>
