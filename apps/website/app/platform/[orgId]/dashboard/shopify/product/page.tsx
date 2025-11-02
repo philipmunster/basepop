@@ -2,17 +2,10 @@ import { Filter } from '@/app/appComponents/Filter'
 import { Suspense } from 'react'
 import TestChart from '@/app/appComponents/ChartTest'
 import { requireUser } from '@/lib/supabase/auth/requireUser'
-import { resolveOrgId } from '@/lib/supabase/auth/resolveOrgId'
 import { getKpisCached } from '@/lib/data/kpis'
 import ErrorCard from '@/app/appComponents/ErrorCard'
 import { getDateRange } from '@/lib/utils/getDateRange'
 import { ValidationError, AuthError, OrgResolutionError, DataFetchError } from '@/lib/errors/classes'
-
-type PageProps = {
-  searchParams: 
-  | Record<string, string | string[] | undefined>
-  | Promise<Record<string, string | string[] | undefined>>
-}
 
 const filters = [
   {
@@ -29,16 +22,18 @@ const filters = [
   },
 ]
 
-export default async function ShopifyProductPage(props: PageProps) {
+export default async function ShopifyProductPage({ params, searchParams }: 
+  {
+  params: Promise<{orgId: string}>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
   try {
     const user = await requireUser() // throws error on failure (should not happen since middleware would redirect to /login)
-    const orgId = await resolveOrgId(user.id) // throws error on failure 
-
-    const searchParams = 
-      props.searchParams instanceof Promise ? await props.searchParams : props.searchParams
+    const { orgId } = await params
+    const { from, to } = await searchParams
 
     // gets the dateRange from searchParams if available, otherwise from DB default dateRange settings
-    const { dateRange } = await getDateRange(orgId, user.id, searchParams)
+    const { dateRange } = await getDateRange(user.id, from, to)
 
     const rows = await getKpisCached({
       orgId,
@@ -48,7 +43,6 @@ export default async function ShopifyProductPage(props: PageProps) {
     return (
       <div>
            <Filter filters={filters} />
-
            {/* dashbord */}
            <div className='p-5'>
             <Suspense fallback={<h1>Loading chart data</h1>}>

@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { getUserMembershipsCached } from '@/lib/data/orgMemberships'
 
 // Add (or adjust) protected route prefixes here.
 // remember to also update middleware.ts list in root
@@ -42,7 +43,7 @@ export async function updateSession(request: NextRequest) {
   // If user is logged in and hitting /login, send them to a default app page.
   if (user && pathname === '/auth/login') {
     const url = request.nextUrl.clone()
-    url.pathname = '/home'
+    url.pathname = '/platform'
     const redirect = NextResponse.redirect(url)
     // preserve cookies from supabaseResponse
     supabaseResponse.cookies.getAll().forEach(c =>
@@ -62,6 +63,28 @@ export async function updateSession(request: NextRequest) {
     )
     return redirect
   }
+
+  //If route is protected, user is logged in and the route is not the onboarding route, but no memberships: redirect to onboarding
+  // if (protectedRoute && user && !pathname.startsWith('/platform/onboarding')) {
+  //   try {
+  //     const memberships = await getUserMembershipsCached(user.id)
+  //     if (!memberships || memberships.length === 0) {
+  //       const url = request.nextUrl.clone()
+  //       url.pathname = '/platform/onboarding'
+  //       const redirect = NextResponse.redirect(url)
+  //       supabaseResponse.cookies.getAll().forEach(c => redirect.cookies.set(c))
+  //       return redirect
+  //     }
+  //   } catch (error) {
+  //     // Handle DB errors gracefully (e.g., redirect to login or error page)
+  //     console.error('Membership check failed in middleware:', error)
+  //     const url = request.nextUrl.clone()
+  //     url.pathname = '/auth/error'
+  //     const redirect = NextResponse.redirect(url)
+  //     supabaseResponse.cookies.getAll().forEach(c => redirect.cookies.set(c))
+  //     return redirect
+  //   }
+  // }
 
   // Non-protected or authenticated protected route: proceed
   return supabaseResponse

@@ -4,6 +4,7 @@ import { ValidationError } from '@/lib/errors/classes'
 import { requireUser } from '@/lib/supabase/auth/requireUser'
 import { createOrgSchema, type createOrgType } from '@repo/zod/createOrg'
 import { createNewOrg } from '@/lib/data/createNewOrg'
+import { redirect } from 'next/navigation'
 
 export async function newOrg(data: createOrgType) {
   const user = await requireUser()
@@ -14,5 +15,9 @@ export async function newOrg(data: createOrgType) {
     throw new ValidationError('Invalid data filters', parsed.error.format())
   }
 
-  await createNewOrg(user.id, cleanedEmail, parsed.data.orgName, parsed.data.describeCompany)
+  // this will throw an error if it fails which will be caught by the form
+  const orgId = crypto.randomUUID()
+  await createNewOrg(user.id, orgId, cleanedEmail, parsed.data.orgName, parsed.data.describeCompany)
+
+  redirect(`/platform/${orgId}/home`)
 }

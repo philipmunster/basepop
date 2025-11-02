@@ -17,11 +17,11 @@ export const signUpSchema = z.object({
   lastName: z.string().min(1, "Last name is required"),
   email: 
     z.string()
-    .email("Invalid email")
-    .refine((val) => {
-      const domain = val.split("@")[1]?.toLowerCase()
-      return domain && !personalEmailDomains.includes(domain)
-    }, "Please use your work email (not a personal address)"),
+    .email("Invalid email"),
+    // .refine((val) => {
+    //   const domain = val.split("@")[1]?.toLowerCase()
+    //   return domain && !personalEmailDomains.includes(domain)
+    // }, "Please use your work email (not a personal address)"),
   describeYou: z.enum(['runs_company', 'employee', 'agency', 'freelancer', 'investor', 'exploring']),
   password: 
     z.string()

@@ -47,7 +47,7 @@ const icons: Record<string, IconObj> = {
 export default function DashboardTitle() {
   const pathName = usePathname()
 
-  const dashboardSection = pathName.split('/')[2]
+  const dashboardSection = pathName.split('/')[4]
 
   const currentIconObj = 
     (dashboardSection && dashboardSection in icons)
@@ -65,7 +65,7 @@ export default function DashboardTitle() {
       <h1 className='truncate text-xl font-semibold'>
         {pathName
           .split('/')
-          .slice(2)
+          .slice(4)
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ')}
       </h1>

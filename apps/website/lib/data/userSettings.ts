@@ -38,7 +38,7 @@ export async function getUserSettingsCached(userId: string): Promise<{ datePrese
     userId,
   ]
 
-  const cacheFn = unstable_cache(
+  const cachedFn = unstable_cache(
     async () => getUserSettings(userId),
     keyparts,
     {
@@ -46,5 +46,11 @@ export async function getUserSettingsCached(userId: string): Promise<{ datePrese
     }
   )
 
-  return cacheFn()
+  const isDev = process.env.NODE_ENV === 'development'
+
+  if (isDev) {
+    return getUserSettings(userId)
+  } else {
+    return cachedFn()
+  }
 }

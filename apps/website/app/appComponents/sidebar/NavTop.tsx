@@ -1,33 +1,40 @@
 "use client"
 
-import { House, Brain, Search } from "lucide-react"
+import { 
+  House, 
+  Brain, 
+  Search,
+  LayoutDashboard,
+  Newspaper,
+  Megaphone,
+  Settings,
+  LifeBuoy,
+  Send
+} from "lucide-react"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Link from 'next/link'
-
-type IconName =
-  | "house"
-  | "brain"
-  | "search"
+import { NavItem, IconName } from "@/app/appComponents/sidebar/AppSidebar"
 
 const iconMap: Record<IconName, React.ComponentType<{ className?: string }>> = {
   house: House,
   brain: Brain,
-  search: Search
+  search: Search,
+  layoutDashboard: LayoutDashboard,
+  newspaper: Newspaper,
+  megaphone: Megaphone,
+  settings: Settings,
+  lifeBuoy: LifeBuoy,
+  send: Send
 }
 
 export default function NavMain({
   items,
 }: {
-  items: {
-    title: string
-    url: string
-    icon: IconName
-    isActive?: boolean
-  }[]
+  items: NavItem[]
 }) {
   return (
     <SidebarMenu>

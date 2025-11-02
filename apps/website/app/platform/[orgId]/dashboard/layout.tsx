@@ -4,15 +4,20 @@ import DashboardTitle from "@/app/appComponents/DashboardTitle"
 import CurrencySelector from "@/app/appComponents/CurrencySelector"
 import DatePicker from "@/app/appComponents/DatePicker"
 import { requireUser } from '@/lib/supabase/auth/requireUser'
-import { resolveOrgId } from '@/lib/supabase/auth/resolveOrgId'
 import { getDateRange } from '@/lib/utils/getDateRange'
 
 
-export default async function LayoutDashboard({ children }: Readonly<{children: React.ReactNode}>) {
+export default async function LayoutDashboard({
+  params,
+  children,
+}: Readonly<{
+  params: Promise<{ orgId: string }>,
+  children: React.ReactNode;
+}>) {
   const user = await requireUser() // throws error on failure (should not happen since middleware would redirect to /login)
-  const orgId = await resolveOrgId(user.id) // throws error on failure
+  const { orgId } = await params
 
-  const defaultPreset = await getDateRange(orgId, user.id)
+  const defaultPreset = await getDateRange(user.id)
   
   return (
     <div>

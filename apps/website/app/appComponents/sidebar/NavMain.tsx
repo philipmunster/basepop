@@ -15,53 +15,37 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import Image from 'next/image'
-
-import {
-  ChevronRight, 
+import Link from 'next/link'
+import { NavItem, IconName } from "@/app/appComponents/sidebar/AppSidebar"
+import { 
+  House, 
+  Brain, 
+  Search,
   LayoutDashboard,
   Newspaper,
   Megaphone,
-  LifeBuoy,
   Settings,
+  LifeBuoy,
   Send,
+  ChevronRight
 } from "lucide-react"
-import Link from 'next/link'
-
-type IconName =
-  | "layoutDashboard"
-  | "newspaper"
-  | "megaphone"
-  | "lifeBuoy"
-  | "settings"
-  | "send"
-
 const iconMap: Record<IconName, React.ComponentType<{ className?: string }>> = {
+  house: House,
+  brain: Brain,
+  search: Search,
   layoutDashboard: LayoutDashboard,
   newspaper: Newspaper,
   megaphone: Megaphone,
-  lifeBuoy: LifeBuoy,
   settings: Settings,
-  send: Send,
+  lifeBuoy: LifeBuoy,
+  send: Send
 }
+
+
 
 export default function NavMain({ groupLabel, items, atBottom = false }: {
   groupLabel?: string
-  items: {
-    title: string
-    url: string
-    icon?: IconName
-    imageIcon?: {
-      src: string
-      alt: string
-      width: number
-      height: number
-    }
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[],
+  items: NavItem[],
   atBottom?: boolean 
 }) {
   return (

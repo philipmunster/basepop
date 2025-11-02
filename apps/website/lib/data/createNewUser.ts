@@ -8,9 +8,6 @@ export async function createNewUser(userId: string, fullName: string, email: str
   const existing = await db.query.user.findFirst({ where: (u, {eq}) => eq(u.id, userId) })
   if (existing) return existing
 
-  // TODO:
-  // proper error handling in signup flow
-
   // do everthing in a transaction, such that if one fails it all stops and everything rolls back
   try {
     await db.transaction(async (tx) => { // tx is the transaction client

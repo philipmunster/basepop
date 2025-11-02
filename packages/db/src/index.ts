@@ -10,6 +10,7 @@ export * from './datePresets'
 export * from './describeYouOptions'
 export * from './describeCompanyOptions'
 export * from './dataSourceIds'
+export * from './supabase.types'
 
 config({ path: '.env' }); // or .env.local
 

@@ -3,14 +3,10 @@ import { org, orgSettings, orgMember, orgRole, orgRolePermissions, orgDataSource
 import { describeCompanyOptionsType, ALL_DATA_SOURCE_IDS } from '@repo/db'
 import { DataInsertError } from '@/lib/errors/classes'
 
-export async function createNewOrg(userId: string, userEmail: string | undefined, orgName: string, organisationSize: describeCompanyOptionsType) {
+export async function createNewOrg(userId: string, orgId: string, userEmail: string | undefined, orgName: string, organisationSize: describeCompanyOptionsType) {
 
-  const orgId = crypto.randomUUID()
   const ownerRoleId = crypto.randomUUID() // the user creating the org is the owner by default
 
-  // TODO:
-  // fill out all the other org tables and make this work!! 
-  // proper error handling in signup flow
   try {
     await db.transaction(async (tx) => {
       await tx.insert(org).values({ id: orgId, name: orgName, createdBy: userId, organisationSize})

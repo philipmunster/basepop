@@ -24,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { useState } from 'react'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
+import { Rocket } from 'lucide-react'
 
 const describeCompanyOptions = [
   { label: "1-5 people", value: "1-5" },
@@ -138,7 +139,7 @@ export default function CreateNewOrgForm({ userEmail }: { userEmail: string | nu
           <Button type="submit" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting 
               ? 'Loading...'
-              : 'Login'
+              : <>Create new organisation <Rocket /></>
             }
           </Button>
             {

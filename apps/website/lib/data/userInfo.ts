@@ -33,7 +33,7 @@ export async function getUserInfoCached(userId: string) {
     userId,
   ]
 
-  const cacheFn = unstable_cache(
+  const cachedFn = unstable_cache(
     async () => getUserInfo(userId),
     keyparts,
     {
@@ -41,5 +41,11 @@ export async function getUserInfoCached(userId: string) {
     }
   )
 
-  return cacheFn()
+  const isDev = process.env.NODE_ENV === 'development'
+
+  if (isDev) {
+    return getUserInfo(userId)
+  } else {
+    return cachedFn()
+  }
 }

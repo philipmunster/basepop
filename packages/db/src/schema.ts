@@ -9,13 +9,15 @@ export const memberRole = pgEnum('member_role', ['owner', 'admin', 'viewer'])
 export const datePreset = pgEnum('date_preset', datePresetsArray)
 export const selfDescription = pgEnum('self_description', describeYouOptions)
 export const organisationSize = pgEnum('organisation_size', describeCompanyOptions)
+export const plans = pgEnum('plans', ['starter', 'basic', 'premium'])
 
 export const org = pgTable('org', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
   createdBy: uuid('created_by').references(() => user.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  organisationSize: organisationSize('organisation_size')
+  organisationSize: organisationSize('organisation_size'),
+  plan: plans('plan').notNull().default('basic')
 })
 
 export const user = pgTable('user', {
@@ -68,7 +70,7 @@ export const orgRolePermissions = pgTable('org_role_permissions', {
 
 export const orgSettings = pgTable('org_settings', {
   orgId: uuid('org_id').primaryKey().notNull().references(() => org.id, { onDelete: 'cascade' }),
-  billingEmail: text('billing_email'),
+  billingEmail: text('billing_email')
 })
 
 export const userSettings = pgTable('user_settings', {
