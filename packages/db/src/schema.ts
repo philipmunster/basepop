@@ -1,16 +1,23 @@
 import {
-  pgTable, uuid, text, timestamp, numeric, primaryKey, pgEnum, index, foreignKey
+  pgTable, uuid, text, timestamp, numeric, primaryKey, pgEnum, index, foreignKey, unique, boolean, smallint
 } from 'drizzle-orm/pg-core'
 import { datePresetsArray } from './datePresets'
+import { describeYouOptions } from './describeYouOptions'
+import { describeCompanyOptions } from './describeCompanyOptions'
 
 export const memberRole = pgEnum('member_role', ['owner', 'admin', 'viewer'])
 export const datePreset = pgEnum('date_preset', datePresetsArray)
+export const selfDescription = pgEnum('self_description', describeYouOptions)
+export const organisationSize = pgEnum('organisation_size', describeCompanyOptions)
+export const plans = pgEnum('plans', ['starter', 'basic', 'premium'])
 
 export const org = pgTable('org', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
-  createdBy: uuid('createdBy').references(() => user.id, { onDelete: 'set null' }),
+  createdBy: uuid('created_by').references(() => user.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  organisationSize: organisationSize('organisation_size'),
+  plan: plans('plan').notNull().default('basic')
 })
 
 export const user = pgTable('user', {
@@ -18,20 +25,52 @@ export const user = pgTable('user', {
   fullName: text('full_name').notNull(),
   email: text('email').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  selfDescription: selfDescription('self_description')
 })
 
 export const orgMember = pgTable('org_member', {
+  id: uuid('id').defaultRandom().primaryKey(),
   orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
   userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
-  role: memberRole('role').notNull().default('admin'),
+  roleId: uuid('role_id').references(() => orgRole.id, { onDelete: 'set null' }),
   joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow(),
 }, (t) => ([
-  primaryKey({ columns: [t.orgId, t.userId] }),
+  unique().on(t.orgId, t.userId)
+]))
+
+export const dataSource = pgTable('data_source', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text('name').notNull().unique()
+})
+
+export const orgDataSourceStatus = pgTable('org_data_source_status', {
+  orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
+  dataSourceId: uuid('data_source_id').notNull().references(() => dataSource.id, { onDelete: 'cascade' }),
+  connected: boolean('connected').notNull().default(false)
+}, (t) => ([
+  primaryKey({ columns: [t.orgId, t.dataSourceId]})
+]))
+
+export const orgRole = pgTable('org_role', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
+  name: text('name').notNull()
+}, (t) => ([
+  unique().on(t.orgId, t.name)
+]))
+
+export const orgRolePermissions = pgTable('org_role_permissions', {
+  roleId: uuid('role_id').notNull().references(() => orgRole.id, { onDelete: 'cascade'}),
+  dataSourceId: uuid('data_source_id').notNull().references(() => dataSource.id, { onDelete: 'cascade'}),
+  orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
+  canView: boolean('can_view').notNull().default(false)
+}, (t) => ([
+  primaryKey({ columns: [t.roleId, t.dataSourceId]})
 ]))
 
 export const orgSettings = pgTable('org_settings', {
   orgId: uuid('org_id').primaryKey().notNull().references(() => org.id, { onDelete: 'cascade' }),
-  billingEmail: text('billing_email').notNull(),
+  billingEmail: text('billing_email')
 })
 
 export const userSettings = pgTable('user_settings', {

@@ -13,7 +13,8 @@
     "studio": "drizzle-kit studio",
     "tsc": "tsc -p .",
     "seed": "tsx src/seed.ts",
-    "test": "tsx src/test.ts"
+    "test": "tsx src/test.ts",
+    "typegen": "supabase gen types typescript --project-id bwdrqgxsftgvnueizgsj --schema public > ./src/supabase.types.ts"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

@@ -3,16 +3,17 @@ import { rangeFromDatePreset } from '@/lib/utils/rangeFromDatePreset'
 import { DataFetchError } from '@/lib/errors/classes'
 
 // gets the dateRange from searchParams if available, otherwise from DB default dateRange settings
-export async function getDateRange(orgId: string, userId: string, searchParams: Record<string, string | string[] | undefined> | undefined = undefined) {
-  const fromISO = searchParams?.dateFrom as string || undefined
-  const toISO = searchParams?.dateTo as string || undefined
+export async function getDateRange(
+  userId: string, 
+  fromISO?: string | string[] | undefined, 
+  toISO?: string | string[] | undefined) {
 
   let from: Date
   let toInclusive: Date
   let label: string | undefined = undefined
 
   // if dateRange from searchParams are available use them
-  if (fromISO && toISO) {
+  if (fromISO && toISO && typeof(fromISO) === 'string' && typeof(toISO) === 'string') {
     from = new Date(fromISO)
     toInclusive = new Date(toISO)
     toInclusive.setDate(toInclusive.getDate() + 1)

@@ -15,14 +15,14 @@ const personalEmailDomains = [
 export const signUpSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  orgName: z.string().min(1, "Organization name is required"),
   email: 
     z.string()
-    .email("Invalid email")
-    .refine((val) => {
-      const domain = val.split("@")[1]?.toLowerCase()
-      return domain && !personalEmailDomains.includes(domain)
-    }, "Please use your work email (not a personal address)"),
+    .email("Invalid email"),
+    // .refine((val) => {
+    //   const domain = val.split("@")[1]?.toLowerCase()
+    //   return domain && !personalEmailDomains.includes(domain)
+    // }, "Please use your work email (not a personal address)"),
+  describeYou: z.enum(['runs_company', 'employee', 'agency', 'freelancer', 'investor', 'exploring']),
   password: 
     z.string()
     .min(8, "Must be at least 8 characters long")

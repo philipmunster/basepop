@@ -33,10 +33,10 @@ async function rawGetKpis({
       .groupBy(sql`1`)
       .orderBy(sql`1`)
     return rows
-  } catch(e) {
+  } catch(err) {
     // e.message is the string, e.cause is Drizzle error and e.meta is the filters used
     throw new DataFetchError('Error fetching KPI data', {
-      cause: e,
+      cause: err,
       meta: {
         orgId,
         dateFrom: dateRange.from.toISOString(),

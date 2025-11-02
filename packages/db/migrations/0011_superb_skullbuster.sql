@@ -1,0 +1,1 @@
+ALTER TABLE "org_data_source_status" ALTER COLUMN "connected" SET DEFAULT false;

@@ -1,0 +1,2 @@
+CREATE TYPE "public"."self_description" AS ENUM('runs_company', 'employee', 'agency', 'freelancer', 'investor', 'exploring');--> statement-breakpoint
+ALTER TABLE "user" ADD COLUMN "self_description" "self_description";

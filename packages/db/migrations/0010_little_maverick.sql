@@ -1,0 +1,2 @@
+ALTER TABLE "org_role_permissions" ADD COLUMN "org_id" uuid NOT NULL;--> statement-breakpoint
+ALTER TABLE "org_role_permissions" ADD CONSTRAINT "org_role_permissions_org_id_org_id_fk" FOREIGN KEY ("org_id") REFERENCES "public"."org"("id") ON DELETE cascade ON UPDATE no action;

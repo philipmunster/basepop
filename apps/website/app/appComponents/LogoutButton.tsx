@@ -6,6 +6,7 @@ import { useTransition } from 'react'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { LogOut } from 'lucide-react'
+import type React from 'react'
 
 function LogoutMenuItem() {
   const router = useRouter()
@@ -27,7 +28,7 @@ function LogoutMenuItem() {
   )
 }
 
-function LogoutButton({ ...props }: { props?: Readonly<React.ReactNode>}) {
+function LogoutButton(props: React.ComponentProps<typeof Button>) {
   const router = useRouter()
   const [pending, start] = useTransition()
 
