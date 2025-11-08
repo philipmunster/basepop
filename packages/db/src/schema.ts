@@ -1,11 +1,10 @@
 import {
-  pgTable, uuid, text, timestamp, numeric, primaryKey, pgEnum, index, foreignKey, unique, boolean, smallint
+  pgTable, uuid, text, timestamp, numeric, primaryKey, pgEnum, index, foreignKey, unique, boolean,
 } from 'drizzle-orm/pg-core'
 import { datePresetsArray } from './datePresets'
 import { describeYouOptions } from './describeYouOptions'
 import { describeCompanyOptions } from './describeCompanyOptions'
 
-export const memberRole = pgEnum('member_role', ['owner', 'admin', 'viewer'])
 export const datePreset = pgEnum('date_preset', datePresetsArray)
 export const selfDescription = pgEnum('self_description', describeYouOptions)
 export const organisationSize = pgEnum('organisation_size', describeCompanyOptions)
@@ -35,7 +34,11 @@ export const orgMember = pgTable('org_member', {
   roleId: uuid('role_id').references(() => orgRole.id, { onDelete: 'set null' }),
   joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow(),
 }, (t) => ([
-  unique().on(t.orgId, t.userId)
+  unique().on(t.orgId, t.userId),
+  foreignKey({
+    columns: [t.roleId, t.orgId], // roleId and orgId together reference a role in orgRole
+    foreignColumns: [orgRole.id, orgRole.orgId], // these are the referenced columns
+  }).onDelete('set null') // shouldn't happen, cause a role can only be deleted if no members have it
 ]))
 
 export const dataSource = pgTable('data_source', {
@@ -54,9 +57,11 @@ export const orgDataSourceStatus = pgTable('org_data_source_status', {
 export const orgRole = pgTable('org_role', {
   id: uuid('id').defaultRandom().primaryKey(),
   orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
-  name: text('name').notNull()
+  name: text('name').notNull(),
+  isOwner: boolean('is_owner').notNull().default(false)
 }, (t) => ([
-  unique().on(t.orgId, t.name)
+  unique().on(t.orgId, t.name),
+  unique().on(t.id, t.orgId)
 ]))
 
 export const orgRolePermissions = pgTable('org_role_permissions', {
@@ -65,7 +70,11 @@ export const orgRolePermissions = pgTable('org_role_permissions', {
   orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
   canView: boolean('can_view').notNull().default(false)
 }, (t) => ([
-  primaryKey({ columns: [t.roleId, t.dataSourceId]})
+  primaryKey({ columns: [t.roleId, t.dataSourceId]}),
+  foreignKey({
+    columns: [t.roleId, t.orgId], // roleId and orgId together reference a role in orgRole
+    foreignColumns: [orgRole.id, orgRole.orgId], // these are the referenced columns
+  }).onDelete('cascade') // if role is deleted, permissions are too
 ]))
 
 export const orgSettings = pgTable('org_settings', {
@@ -74,7 +83,7 @@ export const orgSettings = pgTable('org_settings', {
 })
 
 export const userSettings = pgTable('user_settings', {
-  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade'}),
+  userId: uuid('user_id').primaryKey().references(() => user.id, { onDelete: 'cascade'}),
   datePreset: datePreset('date_preset').notNull().default('Last 30 days'),
   timeZone: text('timezone').notNull().default('Europe/Copenhagen'),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),

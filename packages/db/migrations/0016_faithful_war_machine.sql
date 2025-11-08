@@ -1,0 +1,1 @@
+ALTER TABLE "org_role" RENAME COLUMN "is_admin" TO "is_owner";

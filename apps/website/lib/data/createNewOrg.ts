@@ -14,7 +14,7 @@ export async function createNewOrg(userId: string, orgId: string, userEmail: str
       await tx.insert(orgDataSourceStatus).values(
         ALL_DATA_SOURCE_IDS.map( (id) => ({orgId, dataSourceId: id})) // insert a row for each dataSource (connected false by default)
       )
-      await tx.insert(orgRole).values({ id: ownerRoleId, orgId, name: 'owner' })
+      await tx.insert(orgRole).values({ id: ownerRoleId, orgId, name: 'owner', isOwner: true })
       await tx.insert(orgMember).values({ orgId, userId, roleId: ownerRoleId}) // has to be here cause references orgRole which should be created first
       await tx.insert(orgRolePermissions).values(
         ALL_DATA_SOURCE_IDS.map( (id) => ({roleId: ownerRoleId, dataSourceId: id, canView: true, orgId})) // also inserting row for each id. Owner can of course view all
