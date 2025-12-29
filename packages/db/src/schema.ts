@@ -1,5 +1,5 @@
 import {
-  pgTable, uuid, text, timestamp, numeric, primaryKey, pgEnum, index, foreignKey, unique, boolean,
+  pgTable, uuid, text, timestamp, numeric, primaryKey, pgEnum, index, foreignKey, unique, boolean, integer
 } from 'drizzle-orm/pg-core'
 import { datePresetsArray } from './datePresets'
 import { describeYouOptions } from './describeYouOptions'
@@ -98,5 +98,19 @@ export const shopifyOrderFact = pgTable('shopify_order_fact', {
   totalPrice: numeric('total_price', { precision: 12, scale: 2 }).notNull(),
 }, (t) => ([
   primaryKey({ columns: [t.orgId, t.orderId] }),
-  index('idx_shopify_order_org_created').on(t.orgId, t.createdAt),
+]))
+
+export const shopifySalesFact = pgTable('shopify_sales_fact', {
+  orgId: uuid('org_id').notNull().references(() => org.id, { onDelete: 'cascade' }),
+  shopId: text('shop_id').notNull(),
+  orderId: text('order_id').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+  currency: text('currency').notNull(),
+  device: text('device'),
+  country: text('country'),
+  isNewCustomer: boolean('isNewCustomer'),
+  revenue: numeric('revenue', { precision: 12, scale: 2 }).notNull(), // no rounding done here because prices in Shopify (or anywhere else) is never more than 2 decimals
+  itemsCnt: integer('items_cnt').notNull(),
+}, (t) => ([
+  primaryKey({columns: [t.orgId, t.shopId, t.orderId]})
 ]))
